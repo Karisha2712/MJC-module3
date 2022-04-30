@@ -50,12 +50,12 @@ public class SpringJdbcConfig {
         return new DataSourceTransactionManager(dataSource);
     }
 
-  /*  @Bean
-    @Profile("dev")
-    public DataSource embeddedDataSource() {
-        return new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.H2)
-                .addScript("/gift_certificates.sql")
-                .build();
-    }*/
+//    @Bean
+//    @Profile("dev")
+//    public DataSource embeddedDataSource() {
+//        return new EmbeddedDatabaseBuilder()
+//                .setType(EmbeddedDatabaseType.H2)
+//                .addScript("/gift_certificates.sql")
+//                .build();
+//    }
 }
