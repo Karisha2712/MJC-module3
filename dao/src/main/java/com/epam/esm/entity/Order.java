@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "orders")
-public class Order extends AbstractEntity {
+public class Order extends BaseEntity {
 
     @Column(name = "purchase_date")
     private LocalDateTime purchaseDate;

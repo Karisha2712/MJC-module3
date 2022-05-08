@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "users")
-public class User extends AbstractEntity {
+public class User extends BaseEntity {
 
     @Column
     private String login;

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "certificates")
-public class Certificate extends AbstractEntity {
+public class Certificate extends BaseEntity {
 
     @Column
     private String title;

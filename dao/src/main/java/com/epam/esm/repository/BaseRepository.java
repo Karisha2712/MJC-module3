@@ -1,0 +1,17 @@
+package com.epam.esm.repository;
+
+import com.epam.esm.entity.BaseEntity;
+
+import javax.persistence.EntityManager;
+import java.util.Optional;
+
+public interface BaseRepository<T extends BaseEntity>{
+
+    EntityManager getEntityManager();
+
+    Class<T> getEntityClass();
+
+    default Optional<T> findById(Long id) {
+        return Optional.ofNullable(getEntityManager().find(getEntityClass(), id));
+    }
+}
