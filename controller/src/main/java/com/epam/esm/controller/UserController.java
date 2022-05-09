@@ -1,12 +1,10 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.pagination.Page;
 import com.epam.esm.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -17,5 +15,12 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDto receiveSingleUser(@PathVariable Long id) {
         return userService.retrieveSingleUser(id);
+    }
+
+    @GetMapping
+    public Page<UserDto> receivePageOfUsers(
+            @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+            @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber) {
+        return userService.retrievePageOfUsers(currentPage, elementsPerPageNumber);
     }
 }

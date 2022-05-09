@@ -5,12 +5,15 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.TagAlreadyExistsException;
 import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.mapper.DtoMapper;
+import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,14 +23,15 @@ public class TagServiceImpl implements TagService {
 
     private final DtoMapper<Tag, TagDto> tagDtoMapper;
 
-    public TagDto retrieveSingleTag(Long id) {
+    @Override
+    public TagDto retrieveSingleTag(long id) {
         return tagRepository.findById(id)
                 .map(tagDtoMapper::mapToDto)
                 .orElseThrow(() -> new TagNotFoundException(id));
     }
 
     @Override
-    public void removeTag(Long id) {
+    public void removeTag(long id) {
         Tag tag = tagRepository.findById(id).orElseThrow(() -> new TagNotFoundException(id));
         tagRepository.removeEntity(tag);
     }
@@ -40,5 +44,16 @@ public class TagServiceImpl implements TagService {
         } else {
             tagRepository.saveEntity(tagDtoMapper.mapToEntity(tagDto));
         }
+    }
+
+    @Override
+    public Page<TagDto> retrievePageOfTags(int currentPage, int elementsPerPageNumber) {
+        int totalPageNumber = (int) ((tagRepository.countAllElements() / elementsPerPageNumber)
+                + (tagRepository.countAllElements() % elementsPerPageNumber > 0 ? 1 : 0));
+        List<TagDto> tagDtos = tagRepository.findAll(currentPage, elementsPerPageNumber)
+                .stream()
+                .map(tagDtoMapper::mapToDto)
+                .collect(Collectors.toList());
+        return new Page<>(currentPage, totalPageNumber, elementsPerPageNumber, tagDtos);
     }
 }

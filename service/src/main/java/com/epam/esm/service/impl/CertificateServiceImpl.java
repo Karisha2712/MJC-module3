@@ -6,6 +6,7 @@ import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.mapper.DtoMapper;
+import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.CertificateService;
@@ -20,14 +21,24 @@ import java.util.stream.Collectors;
 public class CertificateServiceImpl implements CertificateService {
     private final CertificateRepository certificateRepository;
     private final TagRepository tagRepository;
-
     private final DtoMapper<Certificate, CertificateDto> certificateDtoMapper;
     private final DtoMapper<Tag, TagDto> tagDtoMapper;
 
-
-    public CertificateDto retrieveSingleCertificate(Long id) {
+    @Override
+    public CertificateDto retrieveSingleCertificate(long id) {
         return certificateRepository.findById(id).map(certificateDtoMapper::mapToDto)
                 .orElseThrow(() -> new CertificateNotFoundException(id));
+    }
+
+    @Override
+    public Page<CertificateDto> retrievePageOfCertificates(int currentPage, int elementsPerPageNumber) {
+        int totalPageNumber = (int) (certificateRepository.countAllElements() / elementsPerPageNumber)
+                + (certificateRepository.countAllElements() % elementsPerPageNumber > 0 ? 1 : 0);
+        List<CertificateDto> certificateDtos = certificateRepository.findAll(currentPage, elementsPerPageNumber)
+                .stream()
+                .map(certificateDtoMapper::mapToDto)
+                .collect(Collectors.toList());
+        return new Page<>(currentPage, totalPageNumber, elementsPerPageNumber, certificateDtos);
     }
 
     @Override
@@ -38,7 +49,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public void removeCertificate(Long id) {
+    public void removeCertificate(long id) {
         Certificate certificate = certificateRepository.findById(id)
                 .orElseThrow(() -> new CertificateNotFoundException(id));
         certificateRepository.removeEntity(certificate);

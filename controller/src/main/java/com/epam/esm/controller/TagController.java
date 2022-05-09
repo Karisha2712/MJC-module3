@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.TagDto;
+import com.epam.esm.pagination.Page;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ControllerResponse;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,13 @@ public class TagController {
     @GetMapping("/{id}")
     public TagDto receiveSingleTag(@PathVariable Long id) {
         return tagService.retrieveSingleTag(id);
+    }
+
+    @GetMapping
+    public Page<TagDto> receivePageOfTags(
+            @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+            @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber) {
+        return tagService.retrievePageOfTags(currentPage, elementsPerPageNumber);
     }
 
     @PostMapping

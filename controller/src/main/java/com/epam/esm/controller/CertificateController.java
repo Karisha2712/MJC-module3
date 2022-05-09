@@ -2,6 +2,7 @@ package com.epam.esm.controller;
 
 
 import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.pagination.Page;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.util.ControllerResponse;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,14 @@ public class CertificateController {
     public CertificateDto receiveSingleCertificate(@PathVariable Long id) {
         return certificateService.retrieveSingleCertificate(id);
     }
+
+    @GetMapping
+    public Page<CertificateDto> receivePageOfCertificates(
+            @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+            @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber) {
+        return certificateService.retrievePageOfCertificates(currentPage, elementsPerPageNumber);
+    }
+
 
     @PostMapping
     public ControllerResponse createCertificate(@RequestBody CertificateDto certificateDto) {
