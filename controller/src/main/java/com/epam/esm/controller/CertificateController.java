@@ -3,11 +3,9 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.CertificateDto;
 import com.epam.esm.service.CertificateService;
+import com.epam.esm.util.ControllerResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/certificates")
@@ -18,5 +16,11 @@ public class CertificateController {
     @GetMapping("/{id}")
     public CertificateDto receiveSingleCertificate(@PathVariable Long id) {
         return certificateService.retrieveSingleCertificate(id);
+    }
+
+    @PostMapping
+    public ControllerResponse createCertificate(@RequestBody CertificateDto certificateDto) {
+        certificateService.saveCertificate(certificateDto);
+        return new ControllerResponse("Certificate was created successfully");
     }
 }

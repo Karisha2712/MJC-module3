@@ -32,7 +32,7 @@ public class Certificate extends BaseEntity {
     @Column(name = "last_updated_date")
     private LocalDateTime lastUpdateDate;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "certificates_has_tags",
             joinColumns = @JoinColumn(name = "certificates_id"),
             inverseJoinColumns = @JoinColumn(name = "tags_id")

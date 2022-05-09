@@ -22,4 +22,9 @@ public class TagServiceImpl implements TagService {
                 .map(tagDtoMapper::mapToDto)
                 .orElseThrow(() -> new TagNotFoundException(id));
     }
+
+    @Override
+    public void saveTag(TagDto tagDto) {
+        tagRepository.saveEntity(tagDtoMapper.mapToEntity(tagDto));
+    }
 }
