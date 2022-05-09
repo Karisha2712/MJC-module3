@@ -19,7 +19,6 @@ public class UserDtoMapper implements DtoMapper<User, UserDto> {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setLogin(user.getLogin());
-        userDto.setPassword(user.getPassword());
         userDto.setOrders(user.getOrders().stream().map(orderDtoMapper::mapToDto)
                 .collect(Collectors.toList()));
         return userDto;
@@ -30,7 +29,6 @@ public class UserDtoMapper implements DtoMapper<User, UserDto> {
         User user = new User();
         user.setId(userDto.getId());
         user.setLogin(userDto.getLogin());
-        user.setPassword(userDto.getPassword());
         user.setOrders(userDto.getOrders().stream().map(orderDtoMapper::mapToEntity)
                 .collect(Collectors.toList()));
         return user;

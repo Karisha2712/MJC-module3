@@ -9,6 +9,5 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 public class UserDto extends AbstractDto {
     private String login;
-    private String password;
     private List<OrderDto> orders;
 }
