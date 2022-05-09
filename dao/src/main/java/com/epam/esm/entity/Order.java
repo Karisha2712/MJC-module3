@@ -18,10 +18,6 @@ public class Order extends BaseEntity {
     @Column(name = "purchase_date")
     private LocalDateTime purchaseDate;
 
-    @ManyToOne
-    @JoinColumn(name = "users_id")
-    private User user;
-
     @ManyToMany
     @JoinTable(name = "orders_has_certificates",
             joinColumns = @JoinColumn(name = "orders_id"),

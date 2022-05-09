@@ -1,7 +1,9 @@
 package com.epam.esm.mapper;
 
 import com.epam.esm.dto.CertificateDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
+import com.epam.esm.entity.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +14,7 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class CertificateDtoMapperImpl implements DtoMapper<Certificate, CertificateDto> {
-    private final TagDtoMapperImpl tagDtoMapper;
+    private final DtoMapper<Tag, TagDto> tagDtoMapper;
 
     public CertificateDto mapToDto(Certificate certificate) {
         CertificateDto certificateDto = new CertificateDto();
