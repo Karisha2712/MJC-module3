@@ -34,7 +34,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public void saveTag(TagDto tagDto) {
-        Optional<Tag> optionalTag = tagRepository.findById(tagDto.getId());
+        Optional<Tag> optionalTag = tagRepository.findByName(tagDto.getName());
         if (optionalTag.isPresent()) {
             throw new TagAlreadyExistsException(tagDto.getName());
         } else {
