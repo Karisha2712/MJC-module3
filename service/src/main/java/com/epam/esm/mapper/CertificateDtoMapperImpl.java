@@ -12,8 +12,6 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class CertificateDtoMapperImpl implements DtoMapper<Certificate, CertificateDto> {
-    private static final String PATTERN = "yyyy-MM-dd'T'HH:mm'Z'";
-    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern(PATTERN);
     private final TagDtoMapperImpl tagDtoMapper;
 
     public CertificateDto mapToDto(Certificate certificate) {
@@ -23,8 +21,8 @@ public class CertificateDtoMapperImpl implements DtoMapper<Certificate, Certific
         certificateDto.setDescription(certificate.getDescription());
         certificateDto.setDuration(certificate.getDuration());
         certificateDto.setPrice(certificate.getPrice());
-        certificateDto.setCreatedDate(dateFormat.format(certificate.getCreatedDate()));
-        certificateDto.setLastUpdateDate(dateFormat.format(certificate.getLastUpdateDate()));
+        certificateDto.setCreatedDate(DateTimeFormatter.ISO_DATE_TIME.format(certificate.getCreatedDate()));
+        certificateDto.setLastUpdateDate(DateTimeFormatter.ISO_DATE_TIME.format(certificate.getLastUpdateDate()));
         certificateDto.setTags(certificate.getTags().stream().map(tagDtoMapper::mapToDto).collect(Collectors.toList()));
         return certificateDto;
     }
