@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tags")
 public class Tag extends BaseEntity {
-
     @Column
     private String name;
+
 }

@@ -3,11 +3,10 @@ package com.epam.esm.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -32,5 +31,12 @@ public class Certificate extends BaseEntity {
 
     @Column(name = "last_updated_date")
     private LocalDateTime lastUpdateDate;
+
+    @ManyToMany
+    @JoinTable(name = "certificates_has_tags",
+            joinColumns = @JoinColumn(name = "certificates_id"),
+            inverseJoinColumns = @JoinColumn(name = "tags_id")
+    )
+    private List<Tag> tags;
 }
 
