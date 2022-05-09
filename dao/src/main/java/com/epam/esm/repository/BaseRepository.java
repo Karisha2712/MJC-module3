@@ -20,4 +20,9 @@ public interface BaseRepository<T extends BaseEntity> {
     default void saveEntity(T entity) {
         getEntityManager().merge(entity);
     }
+
+    @Transactional
+    default void removeEntity(T entity) {
+        getEntityManager().remove(entity);
+    }
 }

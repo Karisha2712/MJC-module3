@@ -37,6 +37,13 @@ public class CertificateServiceImpl implements CertificateService {
         certificateRepository.saveEntity(certificate);
     }
 
+    @Override
+    public void removeCertificate(Long id) {
+        Certificate certificate = certificateRepository.findById(id)
+                .orElseThrow(() -> new CertificateNotFoundException(id));
+        certificateRepository.removeEntity(certificate);
+    }
+
     private List<Tag> retrieveNotExistingTags(List<TagDto> tagDtos) {
         return tagDtos.stream()
                 .map(tag -> tagRepository.findByName(tag.getName()).orElse(tagDtoMapper.mapToEntity(tag)))

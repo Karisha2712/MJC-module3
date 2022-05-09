@@ -22,4 +22,10 @@ public class TagController {
         tagService.saveTag(tagDto);
         return new ControllerResponse("Tag was created successfully");
     }
+
+    @DeleteMapping("/{id}")
+    public ControllerResponse deleteTag(@PathVariable Long id) {
+        tagService.removeTag(id);
+        return new ControllerResponse("Tag was deleted successfully");
+    }
 }

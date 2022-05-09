@@ -24,6 +24,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public void removeTag(Long id) {
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new TagNotFoundException(id));
+        tagRepository.removeEntity(tag);
+    }
+
+    @Override
     public void saveTag(TagDto tagDto) {
         tagRepository.saveEntity(tagDtoMapper.mapToEntity(tagDto));
     }

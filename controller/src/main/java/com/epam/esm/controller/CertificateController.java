@@ -23,4 +23,10 @@ public class CertificateController {
         certificateService.saveCertificate(certificateDto);
         return new ControllerResponse("Certificate was created successfully");
     }
+
+    @DeleteMapping("/{id}")
+    public ControllerResponse deleteCertificate(@PathVariable Long id) {
+        certificateService.removeCertificate(id);
+        return new ControllerResponse("Certificate was deleted successfully");
+    }
 }
