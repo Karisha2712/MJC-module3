@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.entity.Order;
+import com.epam.esm.exception.OrderNotFoundException;
 import com.epam.esm.mapper.DtoMapper;
 import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.service.OrderService;
@@ -19,6 +20,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto retrieveSingleOrder(Long id) {
         return orderRepository.findById(id).map(orderDtoMapper::mapToDto)
-                .orElseThrow(RuntimeException::new); //TODO change exception
+                .orElseThrow(() -> new OrderNotFoundException(id));
     }
 }
