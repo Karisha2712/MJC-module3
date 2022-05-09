@@ -5,7 +5,7 @@ import com.epam.esm.entity.BaseEntity;
 import javax.persistence.EntityManager;
 import java.util.Optional;
 
-public interface BaseRepository<T extends BaseEntity>{
+public interface BaseRepository<T extends BaseEntity> {
 
     EntityManager getEntityManager();
 
