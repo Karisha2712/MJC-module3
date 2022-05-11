@@ -1,8 +1,6 @@
 package com.epam.esm.handler;
 
-import com.epam.esm.exception.CertificateNotFoundException;
-import com.epam.esm.exception.InvalidAttributeValueException;
-import com.epam.esm.exception.TagNotFoundException;
+import com.epam.esm.exception.*;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -25,6 +23,30 @@ public class CertificatesExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public CertificatesError handleCertificateNotFoundException(CertificateNotFoundException e) {
         return new CertificatesError(e.getMessage(), HttpStatus.NOT_FOUND, CertificateNotFoundException.ERROR_CODE);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public CertificatesError handleUserNotFoundException(UserNotFoundException e) {
+        return new CertificatesError(e.getMessage(), HttpStatus.NOT_FOUND, UserNotFoundException.ERROR_CODE);
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public CertificatesError handleOrderNotFoundException(OrderNotFoundException e) {
+        return new CertificatesError(e.getMessage(), HttpStatus.NOT_FOUND, OrderNotFoundException.ERROR_CODE);
+    }
+
+    @ExceptionHandler(PageNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public CertificatesError handlePageNotFoundException(PageNotFoundException e) {
+        return new CertificatesError(e.getMessage(), HttpStatus.NOT_FOUND, PageNotFoundException.ERROR_CODE);
+    }
+
+    @ExceptionHandler(TagAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public CertificatesError handleTagAlreadyExistsException(TagAlreadyExistsException e) {
+        return new CertificatesError(e.getMessage(), HttpStatus.NOT_FOUND, TagAlreadyExistsException.ERROR_CODE);
     }
 
     @ExceptionHandler(InvalidAttributeValueException.class)
