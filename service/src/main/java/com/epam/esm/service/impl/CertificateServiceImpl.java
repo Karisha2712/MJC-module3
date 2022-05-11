@@ -5,6 +5,7 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.mapper.DtoMapper;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.CertificateRepository;
@@ -34,6 +35,9 @@ public class CertificateServiceImpl implements CertificateService {
     public Page<CertificateDto> retrievePageOfCertificates(int currentPage, int elementsPerPageNumber) {
         int totalPageNumber = (int) (certificateRepository.countAllElements() / elementsPerPageNumber)
                 + (certificateRepository.countAllElements() % elementsPerPageNumber > 0 ? 1 : 0);
+        if (currentPage > totalPageNumber) {
+            throw new PageNotFoundException(currentPage, totalPageNumber);
+        }
         List<CertificateDto> certificateDtos = certificateRepository.findAll(currentPage, elementsPerPageNumber)
                 .stream()
                 .map(certificateDtoMapper::mapToDto)

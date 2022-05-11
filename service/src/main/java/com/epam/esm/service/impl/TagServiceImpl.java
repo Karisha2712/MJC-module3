@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.exception.TagAlreadyExistsException;
 import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.mapper.DtoMapper;
@@ -50,6 +51,9 @@ public class TagServiceImpl implements TagService {
     public Page<TagDto> retrievePageOfTags(int currentPage, int elementsPerPageNumber) {
         int totalPageNumber = (int) ((tagRepository.countAllElements() / elementsPerPageNumber)
                 + (tagRepository.countAllElements() % elementsPerPageNumber > 0 ? 1 : 0));
+        if (currentPage > totalPageNumber) {
+            throw new PageNotFoundException(currentPage, totalPageNumber);
+        }
         List<TagDto> tagDtos = tagRepository.findAll(currentPage, elementsPerPageNumber)
                 .stream()
                 .map(tagDtoMapper::mapToDto)

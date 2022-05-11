@@ -3,6 +3,7 @@ package com.epam.esm.service.impl;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.entity.Order;
 import com.epam.esm.exception.OrderNotFoundException;
+import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.mapper.DtoMapper;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.OrderRepository;
@@ -31,6 +32,9 @@ public class OrderServiceImpl implements OrderService {
     public Page<OrderDto> retrievePageOfOrders(int currentPage, int elementsPerPageNumber) {
         int totalPageNumber = (int) (orderRepository.countAllElements() / elementsPerPageNumber)
                 + (orderRepository.countAllElements() % elementsPerPageNumber > 0 ? 1 : 0);
+        if (currentPage > totalPageNumber) {
+            throw new PageNotFoundException(currentPage, totalPageNumber);
+        }
         List<OrderDto> certificateDtos = orderRepository.findAll(currentPage, elementsPerPageNumber)
                 .stream()
                 .map(orderDtoMapper::mapToDto)
