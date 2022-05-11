@@ -9,6 +9,9 @@ import javax.persistence.PersistenceContext;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
+    public static final String USER = "user";
+    public static final String ID = "id";
+
     @PersistenceContext
     EntityManager entityManager;
 
@@ -21,4 +24,5 @@ public class UserRepositoryImpl implements UserRepository {
     public Class<User> getEntityClass() {
         return User.class;
     }
+
 }

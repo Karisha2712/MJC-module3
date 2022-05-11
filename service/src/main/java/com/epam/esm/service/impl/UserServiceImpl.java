@@ -1,6 +1,8 @@
 package com.epam.esm.service.impl;
 
+import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.UserNotFoundException;
 import com.epam.esm.mapper.DtoMapper;
@@ -20,6 +22,8 @@ public class UserServiceImpl implements UserService {
 
     private final DtoMapper<User, UserDto> userDtoMapper;
 
+    private final DtoMapper<Order, OrderDto> orderDtoMapper;
+
     @Override
     public UserDto retrieveSingleUser(long id) {
         return userRepository.findById(id).map(userDtoMapper::mapToDto)
@@ -35,5 +39,18 @@ public class UserServiceImpl implements UserService {
                 .map(userDtoMapper::mapToDto)
                 .collect(Collectors.toList());
         return new Page<>(currentPage, totalPageNumber, elementsPerPageNumber, certificateDtos);
+    }
+
+    @Override
+    public Page<OrderDto> retrieveUserOrders(long id, int currentPage, int elementsPerPageNumber) {
+        UserDto userDto = retrieveSingleUser(id);
+        List<OrderDto> orderDtos = userDto.getOrders();
+        int totalOrdersNumber = orderDtos.size();
+        int totalPageNumber = (totalOrdersNumber / elementsPerPageNumber) + (totalOrdersNumber % elementsPerPageNumber > 0 ? 1 : 0);
+        List<OrderDto> limitOrderDtos = orderDtos.stream()
+                .skip((long) (currentPage - 1) * elementsPerPageNumber)
+                .limit(elementsPerPageNumber)
+                .collect(Collectors.toList());
+        return new Page<>(currentPage, totalPageNumber, elementsPerPageNumber, limitOrderDtos);
     }
 }

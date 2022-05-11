@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.service.UserService;
@@ -15,6 +16,14 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDto receiveSingleUser(@PathVariable Long id) {
         return userService.retrieveSingleUser(id);
+    }
+
+    @GetMapping("/{id}/orders")
+    public Page<OrderDto> receiveUserOrders(
+            @PathVariable Long id,
+            @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
+            @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber) {
+        return userService.retrieveUserOrders(id, currentPage, elementsPerPageNumber);
     }
 
     @GetMapping
