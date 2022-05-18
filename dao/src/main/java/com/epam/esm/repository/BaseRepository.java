@@ -16,7 +16,7 @@ public interface BaseRepository<T extends BaseEntity> {
 
     Class<T> getEntityClass();
 
-    default Optional<T> findById(Long id) {
+    default Optional<T> findById(long id) {
         return Optional.ofNullable(getEntityManager().find(getEntityClass(), id));
     }
 

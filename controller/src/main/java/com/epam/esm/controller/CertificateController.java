@@ -26,11 +26,17 @@ public class CertificateController {
         return certificateService.retrievePageOfCertificates(currentPage, elementsPerPageNumber);
     }
 
-
     @PostMapping
     public ControllerResponse createCertificate(@RequestBody CertificateDto certificateDto) {
         certificateService.saveCertificate(certificateDto);
         return new ControllerResponse("Certificate was created successfully");
+    }
+
+    @PatchMapping("/{id}")
+    public ControllerResponse updateCertificate(@PathVariable Long id,
+                                                @RequestBody CertificateDto certificateDto) {
+        certificateService.editCertificate(id, certificateDto);
+        return new ControllerResponse("Certificate was updated successfully");
     }
 
     @DeleteMapping("/{id}")

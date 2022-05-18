@@ -13,8 +13,10 @@ import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.CertificateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,9 +61,28 @@ public class CertificateServiceImpl implements CertificateService {
         certificateRepository.removeEntity(certificate);
     }
 
+    @Override
+    @Transactional
+    public void editCertificate(long id, CertificateDto certificateDto) {
+        Certificate certificate = certificateRepository.findById(id)
+                .orElseThrow(() -> new CertificateNotFoundException(id));
+        setCertificateToUpdate(certificateDto, certificate);
+        certificateRepository.updateCertificate(certificate);
+    }
+
     private List<Tag> retrieveNotExistingTags(List<TagDto> tagDtos) {
         return tagDtos.stream()
                 .map(tag -> tagRepository.findByName(tag.getName()).orElse(tagDtoMapper.mapToEntity(tag)))
                 .collect(Collectors.toList());
     }
+
+    private void setCertificateToUpdate(CertificateDto certificateDto, Certificate certificate) {
+        Optional.ofNullable(certificateDto.getTitle()).ifPresent(certificate::setTitle);
+        Optional.ofNullable(certificateDto.getDescription()).ifPresent(certificate::setDescription);
+        Optional.ofNullable(certificateDto.getDuration()).ifPresent(certificate::setDuration);
+        Optional.ofNullable(certificateDto.getPrice()).ifPresent(certificate::setPrice);
+        Optional.ofNullable(certificateDto.getTags())
+                .ifPresent(tagDtos -> certificate.setTags(retrieveNotExistingTags(tagDtos)));
+    }
+
 }

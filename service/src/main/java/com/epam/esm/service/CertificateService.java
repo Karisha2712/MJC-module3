@@ -11,4 +11,6 @@ public interface CertificateService {
     void saveCertificate(CertificateDto certificateDto);
 
     void removeCertificate(long id);
+
+    void editCertificate(long id, CertificateDto certificateDto);
 }
