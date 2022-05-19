@@ -5,7 +5,9 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.InvalidAttributeValueException;
 import com.epam.esm.exception.PageNotFoundException;
+import com.epam.esm.filter.CertificatesFilter;
 import com.epam.esm.mapper.DtoMapper;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.CertificateRepository;
@@ -34,16 +36,22 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public Page<CertificateDto> retrievePageOfCertificates(int currentPage, int elementsPerPageNumber) {
-        int totalPageNumber = (int) (certificateRepository.countAllElements() / elementsPerPageNumber)
-                + (certificateRepository.countAllElements() % elementsPerPageNumber > 0 ? 1 : 0);
+    public Page<CertificateDto> retrievePageOfCertificatesFoundWithFilter(CertificatesFilter filter,
+                                                                          int currentPage,
+                                                                          int elementsPerPageNumber) {
+        if (filter.isFilterParamsNotValid()) {
+            throw new InvalidAttributeValueException();
+        }
+        int totalPageNumber = (int) (certificateRepository.countFilteredElements(filter) / elementsPerPageNumber)
+                + (certificateRepository.countFilteredElements(filter) % elementsPerPageNumber > 0 ? 1 : 0);
         if (currentPage > totalPageNumber) {
             throw new PageNotFoundException(currentPage, totalPageNumber);
         }
-        List<CertificateDto> certificateDtos = certificateRepository.findAll(currentPage, elementsPerPageNumber)
-                .stream()
-                .map(certificateDtoMapper::mapToDto)
-                .collect(Collectors.toList());
+        List<CertificateDto> certificateDtos =
+                certificateRepository.findCertificatesWithFilter(filter, currentPage, elementsPerPageNumber)
+                        .stream()
+                        .map(certificateDtoMapper::mapToDto)
+                        .collect(Collectors.toList());
         return new Page<>(currentPage, totalPageNumber, elementsPerPageNumber, certificateDtos);
     }
 
