@@ -16,8 +16,7 @@ public class User extends BaseEntity {
     @Column
     private String login;
 
-    @OneToMany
-    @JoinColumn(name = "id")
+    @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
 
     @Column

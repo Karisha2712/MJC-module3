@@ -25,6 +25,10 @@ public class Order extends BaseEntity {
     )
     private List<Certificate> certificates = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "users_id")
+    private User user;
+
     @Column
     private BigDecimal cost;
 }

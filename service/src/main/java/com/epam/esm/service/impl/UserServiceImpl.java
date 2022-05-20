@@ -23,8 +23,6 @@ public class UserServiceImpl implements UserService {
 
     private final DtoMapper<User, UserDto> userDtoMapper;
 
-    private final DtoMapper<Order, OrderDto> orderDtoMapper;
-
     @Override
     public UserDto retrieveSingleUser(long id) {
         return userRepository.findById(id).map(userDtoMapper::mapToDto)
@@ -38,11 +36,11 @@ public class UserServiceImpl implements UserService {
         if (currentPage > totalPageNumber) {
             throw new PageNotFoundException(currentPage, totalPageNumber);
         }
-        List<UserDto> certificateDtos = userRepository.findAll(currentPage, elementsPerPageNumber)
+        List<UserDto> userDtos = userRepository.findAll(currentPage, elementsPerPageNumber)
                 .stream()
                 .map(userDtoMapper::mapToDto)
                 .collect(Collectors.toList());
-        return new Page<>(currentPage, totalPageNumber, elementsPerPageNumber, certificateDtos);
+        return new Page<>(currentPage, totalPageNumber, elementsPerPageNumber, userDtos);
     }
 
     @Override
