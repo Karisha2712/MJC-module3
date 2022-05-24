@@ -11,11 +11,6 @@ public class CertificatesFilter {
     private static final String TITLE = "title";
     private static final String DATE = "createdDate";
     private static final String ID = "id";
-
-    public enum Order {
-        ASC, DESC
-    }
-
     private String sortBy;
     private Order order;
     private String textPart;
@@ -23,5 +18,9 @@ public class CertificatesFilter {
 
     public boolean isFilterParamsNotValid() {
         return sortBy != null && !sortBy.equals(TITLE) && !sortBy.equals(DATE) && !sortBy.equals(ID);
+    }
+
+    public enum Order {
+        ASC, DESC
     }
 }

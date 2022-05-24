@@ -6,7 +6,6 @@ import com.epam.esm.filter.CertificatesFilter;
 import java.util.List;
 
 public interface CertificateRepository extends BaseRepository<Certificate> {
-    void updateCertificate(Certificate certificate);
 
     List<Certificate> findCertificatesWithFilter(CertificatesFilter filter, int page, int elementsPerPage);
 

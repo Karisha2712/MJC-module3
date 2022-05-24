@@ -75,7 +75,7 @@ public class CertificateServiceImpl implements CertificateService {
         Certificate certificate = certificateRepository.findById(id)
                 .orElseThrow(() -> new CertificateNotFoundException(id));
         setCertificateToUpdate(certificateDto, certificate);
-        certificateRepository.updateCertificate(certificate);
+        certificateRepository.saveEntity(certificate);
     }
 
     private List<Tag> retrieveNotExistingTags(List<TagDto> tagDtos) {

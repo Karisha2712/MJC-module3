@@ -39,12 +39,6 @@ public class CertificateRepositoryImpl implements CertificateRepository {
 
     @Override
     @Transactional
-    public void updateCertificate(Certificate certificate) {
-        entityManager.merge(certificate);
-    }
-
-    @Override
-    @Transactional
     public List<Certificate> findCertificatesWithFilter(CertificatesFilter filter,
                                                         int page,
                                                         int elementsPerPage) {
