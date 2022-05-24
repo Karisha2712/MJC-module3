@@ -18,6 +18,11 @@ public class TagController {
         return tagService.retrieveSingleTag(id);
     }
 
+    @GetMapping("/most-widely-used")
+    public TagDto receiveMostWidelyUsedTag() {
+        return tagService.retrieveMostWidelyUsedTag();
+    }
+
     @GetMapping
     public Page<TagDto> receivePageOfTags(
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,

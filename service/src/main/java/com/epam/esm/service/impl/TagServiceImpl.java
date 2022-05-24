@@ -60,4 +60,10 @@ public class TagServiceImpl implements TagService {
                 .collect(Collectors.toList());
         return new Page<>(currentPage, totalPageNumber, elementsPerPageNumber, tagDtos);
     }
+
+    @Override
+    public TagDto retrieveMostWidelyUsedTag() {
+        return tagRepository.findMostWidelyUsedTag().map(tagDtoMapper::mapToDto)
+                .orElseThrow(() -> new TagNotFoundException(0));
+    }
 }

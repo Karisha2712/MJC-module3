@@ -11,4 +11,6 @@ public interface TagService {
     void saveTag(TagDto tagDto);
 
     Page<TagDto> retrievePageOfTags(int currentPage, int elementsPerPageNumber);
+
+    TagDto retrieveMostWidelyUsedTag();
 }
