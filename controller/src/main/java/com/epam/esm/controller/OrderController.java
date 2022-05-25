@@ -1,6 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.OrderDto;
+import com.epam.esm.hateoas.OrdersLinksCreator;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.service.OrderService;
 import lombok.AllArgsConstructor;
@@ -11,16 +12,22 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+    private final OrdersLinksCreator ordersLinksCreator;
 
     @GetMapping
     public Page<OrderDto> receivePageOfOrders(
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
             @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber) {
-        return orderService.retrievePageOfOrders(currentPage, elementsPerPageNumber);
+        Page<OrderDto> orderPage = orderService.retrievePageOfOrders(currentPage, elementsPerPageNumber);
+        orderPage.getPageContent().forEach(ordersLinksCreator::createLinks);
+        ordersLinksCreator.createPaginationLinks(orderPage);
+        return orderPage;
     }
 
     @GetMapping("/{id}")
     public OrderDto receiveSingleOrder(@PathVariable Long id) {
-        return orderService.retrieveSingleOrder(id);
+        OrderDto order = orderService.retrieveSingleOrder(id);
+        ordersLinksCreator.createLinks(order);
+        return order;
     }
 }
