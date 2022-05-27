@@ -72,6 +72,15 @@ public class CertificatesExceptionHandler {
         return new CertificatesError(message, HttpStatus.NOT_FOUND, TagAlreadyExistsException.ERROR_CODE);
     }
 
+    @ExceptionHandler(OrderCanNotBeEmptyException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CertificatesError handleOrderCanNotBeEmptyException(OrderCanNotBeEmptyException e) {
+        String code = HttpStatus.BAD_REQUEST.value() + OrderCanNotBeEmptyException.ERROR_CODE;
+        String message = messageSource.getMessage(code, null, Locale.ENGLISH);
+        return new CertificatesError(message, HttpStatus.BAD_REQUEST, OrderCanNotBeEmptyException.ERROR_CODE);
+    }
+
+
     @ExceptionHandler(InvalidAttributeValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CertificatesError handleInvalidAttributeValueException(InvalidAttributeValueException e) {

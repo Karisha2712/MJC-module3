@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +76,7 @@ class UserServiceTest {
         certificate.setDescription("description1");
         certificate.setCreatedDate(LocalDateTime.parse("2022-04-19T11:00:00", formatter));
         certificate.setLastUpdateDate(LocalDateTime.parse("2022-04-19T11:00:00", formatter));
+        certificate.setTags(Collections.emptyList());
 
         CertificateDto certificateDto = new CertificateDto();
         certificateDto.setId(1L);
@@ -84,6 +86,7 @@ class UserServiceTest {
         certificateDto.setDescription("description1");
         certificateDto.setCreatedDate("2022-04-19T11:00:00");
         certificateDto.setLastUpdateDate("2022-04-19T11:00:00");
+        certificateDto.setTags(Collections.emptyList());
 
         Order order1 = new Order();
         order1.setId(1L);

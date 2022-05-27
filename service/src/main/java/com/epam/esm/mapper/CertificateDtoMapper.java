@@ -27,8 +27,7 @@ public class CertificateDtoMapper implements DtoMapper<Certificate, CertificateD
                 .format(certificate.getCreatedDate()));
         certificateDto.setLastUpdateDate(DateTimeFormatter.ISO_DATE_TIME
                 .format(certificate.getLastUpdateDate()));
-        certificateDto.setTags(certificate.getTags() == null
-                ? null : certificate.getTags().stream().map(tagDtoMapper::mapToDto)
+        certificateDto.setTags(certificate.getTags().stream().map(tagDtoMapper::mapToDto)
                 .collect(Collectors.toList()));
         return certificateDto;
     }

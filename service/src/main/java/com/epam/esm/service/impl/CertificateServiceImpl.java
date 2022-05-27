@@ -58,7 +58,9 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public void saveCertificate(CertificateDto certificateDto) {
         Certificate certificate = certificateDtoMapper.mapToEntity(certificateDto);
-        certificate.setTags(retrieveNotExistingTags(certificateDto.getTags()));
+        if (certificate.getTags() != null) {
+            certificate.setTags(retrieveNotExistingTags(certificateDto.getTags()));
+        }
         certificateRepository.saveEntity(certificate);
     }
 
