@@ -100,7 +100,7 @@ public class CertificatesExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CertificatesError handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
         String message = messageSource
-                .getMessage("400-invalidArgument", null, Locale.ENGLISH);
+                .getMessage("400-invalidArgumentType", null, Locale.ENGLISH);
         return new CertificatesError(message, HttpStatus.BAD_REQUEST);
     }
 

@@ -22,7 +22,9 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDto receiveSingleUser(@PathVariable Long id) {
-        return userService.retrieveSingleUser(id);
+        UserDto user = userService.retrieveSingleUser(id);
+        usersLinksCreator.createLinks(user);
+        return user;
     }
 
     @GetMapping("/{id}/orders")
@@ -32,7 +34,7 @@ public class UserController {
             @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber) {
         Page<OrderDto> orderPage = userService.retrieveUserOrders(id, currentPage, elementsPerPageNumber);
         orderPage.getPageContent().forEach(ordersLinksCreator::createLinks);
-        //todo add pagination links
+        ordersLinksCreator.createPaginationLinks(id, orderPage);
         return orderPage;
     }
 

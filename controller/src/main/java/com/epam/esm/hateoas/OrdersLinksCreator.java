@@ -3,6 +3,7 @@ package com.epam.esm.hateoas;
 import com.epam.esm.controller.CertificateController;
 import com.epam.esm.controller.OrderController;
 import com.epam.esm.controller.TagController;
+import com.epam.esm.controller.UserController;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.pagination.Page;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class OrdersLinksCreator implements LinksCreator<OrderDto> {
+
     @Override
     public void createLinks(OrderDto order) {
         order.add(linkTo(methodOn(OrderController.class)
@@ -39,6 +41,20 @@ public class OrdersLinksCreator implements LinksCreator<OrderDto> {
         if (page.getCurrentPage() < page.getTotalPageNumber()) {
             page.add(linkTo(methodOn(OrderController.class)
                     .receivePageOfOrders(page.getCurrentPage() + 1, page.getElementsPerPageNumber()))
+                    .withRel("Next page"));
+        }
+    }
+
+    public void createPaginationLinks(long userId, Page<OrderDto> page) {
+        if (page.getCurrentPage() > 1) {
+            page.add(linkTo(methodOn(UserController.class)
+                    .receiveUserOrders(userId, page.getCurrentPage() - 1, page.getElementsPerPageNumber()))
+                    .withRel("Previous page"));
+        }
+
+        if (page.getCurrentPage() < page.getTotalPageNumber()) {
+            page.add(linkTo(methodOn(UserController.class)
+                    .receiveUserOrders(userId, page.getCurrentPage() + 1, page.getElementsPerPageNumber()))
                     .withRel("Next page"));
         }
     }
