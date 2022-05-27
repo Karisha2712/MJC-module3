@@ -5,7 +5,7 @@ import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TagDtoMapperImpl implements DtoMapper<Tag, TagDto> {
+public class TagDtoMapper implements DtoMapper<Tag, TagDto> {
     public TagDto mapToDto(Tag tag) {
         TagDto tagDto = new TagDto();
         tagDto.setName(tag.getName());

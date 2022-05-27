@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class CertificateDtoMapperImpl implements DtoMapper<Certificate, CertificateDto> {
+public class CertificateDtoMapper implements DtoMapper<Certificate, CertificateDto> {
     private final DtoMapper<Tag, TagDto> tagDtoMapper;
 
     public CertificateDto mapToDto(Certificate certificate) {
@@ -27,7 +27,8 @@ public class CertificateDtoMapperImpl implements DtoMapper<Certificate, Certific
                 .format(certificate.getCreatedDate()));
         certificateDto.setLastUpdateDate(DateTimeFormatter.ISO_DATE_TIME
                 .format(certificate.getLastUpdateDate()));
-        certificateDto.setTags(certificate.getTags().stream().map(tagDtoMapper::mapToDto)
+        certificateDto.setTags(certificate.getTags() == null
+                ? null : certificate.getTags().stream().map(tagDtoMapper::mapToDto)
                 .collect(Collectors.toList()));
         return certificateDto;
     }
