@@ -1,5 +1,6 @@
 package com.epam.esm.audit;
 
+import com.epam.esm.entity.BaseEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,23 +13,23 @@ public class AuditListener {
     @PrePersist
     @PreUpdate
     @PreRemove
-    private void beforeAnyOperation(Object entity) {
-        logger.info("[AUDIT] starting add/update/delete operation for entity {} at {}",
-                entity, LocalDateTime.now());
+    private void beforeAnyOperation(BaseEntity entity) {
+        logger.info("[AUDIT] starting add/update/delete operation for entity {} with id {} at {}",
+                entity.getClass().getSimpleName(), entity.getId(), LocalDateTime.now());
     }
 
     @PostPersist
     @PostUpdate
     @PostRemove
-    private void afterAnyOperation(Object entity) {
-        logger.info("[AUDIT] complete add/update/delete operation for entity {} at {}",
-                entity, LocalDateTime.now());
+    private void afterAnyOperation(BaseEntity entity) {
+        logger.info("[AUDIT] complete add/update/delete operation for entity {} with id {} at {}",
+                entity.getClass().getSimpleName(), entity.getId(), LocalDateTime.now());
     }
 
     @PostLoad
-    private void afterLoadingEntity(Object entity) {
-        logger.info("[AUDIT] entity {} loaded at {}",
-                entity, LocalDateTime.now());
+    private void afterLoadingEntity(BaseEntity entity) {
+        logger.info("[AUDIT] entity {} with id {} loaded at {}",
+                entity.getClass().getSimpleName(), entity.getId(), LocalDateTime.now());
     }
 
 }

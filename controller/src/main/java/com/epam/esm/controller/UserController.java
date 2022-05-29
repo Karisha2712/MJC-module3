@@ -31,7 +31,7 @@ public class UserController {
     public Page<OrderDto> receiveUserOrders(
             @PathVariable Long id,
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
-            @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber) {
+            @RequestParam(name = "size", required = false, defaultValue = "10") int elementsPerPageNumber) {
         Page<OrderDto> orderPage = userService.retrieveUserOrders(id, currentPage, elementsPerPageNumber);
         orderPage.getPageContent().forEach(ordersLinksCreator::createLinks);
         ordersLinksCreator.createPaginationLinks(id, orderPage);
@@ -41,7 +41,7 @@ public class UserController {
     @GetMapping
     public Page<UserDto> receivePageOfUsers(
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
-            @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber) {
+            @RequestParam(name = "size", required = false, defaultValue = "10") int elementsPerPageNumber) {
         Page<UserDto> userPage = userService.retrievePageOfUsers(currentPage, elementsPerPageNumber);
         userPage.getPageContent().forEach(usersLinksCreator::createLinks);
         usersLinksCreator.createPaginationLinks(userPage);

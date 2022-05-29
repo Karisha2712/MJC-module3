@@ -1,6 +1,9 @@
 package com.epam.esm.handler;
 
-import com.epam.esm.exception.*;
+import com.epam.esm.exception.InvalidAttributeValueException;
+import com.epam.esm.exception.OrderCanNotBeEmptyException;
+import com.epam.esm.exception.ResourceNotFoundException;
+import com.epam.esm.exception.TagAlreadyExistsException;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,44 +27,13 @@ public class CertificatesExceptionHandler {
         this.messageSource = messageSource;
     }
 
-    @ExceptionHandler(TagNotFoundException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public CertificatesError handleTagNotFoundException(TagNotFoundException e) {
-        String code = HttpStatus.NOT_FOUND.value() + TagNotFoundException.ERROR_CODE;
+    public CertificatesError handleTagNotFoundException(ResourceNotFoundException e) {
+        String errorCode = e.getErrorCode();
+        String code = HttpStatus.NOT_FOUND.value() + errorCode;
         String message = messageSource.getMessage(code, e.getArgs(), Locale.ENGLISH);
-        return new CertificatesError(message, HttpStatus.NOT_FOUND, TagNotFoundException.ERROR_CODE);
-    }
-
-    @ExceptionHandler(CertificateNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public CertificatesError handleCertificateNotFoundException(CertificateNotFoundException e) {
-        String code = HttpStatus.NOT_FOUND.value() + CertificateNotFoundException.ERROR_CODE;
-        String message = messageSource.getMessage(code, e.getArgs(), Locale.ENGLISH);
-        return new CertificatesError(message, HttpStatus.NOT_FOUND, CertificateNotFoundException.ERROR_CODE);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public CertificatesError handleUserNotFoundException(UserNotFoundException e) {
-        String code = HttpStatus.NOT_FOUND.value() + UserNotFoundException.ERROR_CODE;
-        String message = messageSource.getMessage(code, e.getArgs(), Locale.ENGLISH);
-        return new CertificatesError(message, HttpStatus.NOT_FOUND, UserNotFoundException.ERROR_CODE);
-    }
-
-    @ExceptionHandler(OrderNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public CertificatesError handleOrderNotFoundException(OrderNotFoundException e) {
-        String code = HttpStatus.NOT_FOUND.value() + OrderNotFoundException.ERROR_CODE;
-        String message = messageSource.getMessage(code, e.getArgs(), Locale.ENGLISH);
-        return new CertificatesError(message, HttpStatus.NOT_FOUND, OrderNotFoundException.ERROR_CODE);
-    }
-
-    @ExceptionHandler(PageNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public CertificatesError handlePageNotFoundException(PageNotFoundException e) {
-        String code = HttpStatus.NOT_FOUND.value() + PageNotFoundException.ERROR_CODE;
-        String message = messageSource.getMessage(code, e.getArgs(), Locale.ENGLISH);
-        return new CertificatesError(message, HttpStatus.NOT_FOUND, PageNotFoundException.ERROR_CODE);
+        return new CertificatesError(message, HttpStatus.NOT_FOUND, errorCode);
     }
 
     @ExceptionHandler(TagAlreadyExistsException.class)

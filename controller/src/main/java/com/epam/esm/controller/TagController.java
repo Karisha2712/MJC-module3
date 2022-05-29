@@ -32,7 +32,7 @@ public class TagController {
     @GetMapping
     public Page<TagDto> receivePageOfTags(
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
-            @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber) {
+            @RequestParam(name = "size", required = false, defaultValue = "10") int elementsPerPageNumber) {
         Page<TagDto> tagPage = tagService.retrievePageOfTags(currentPage, elementsPerPageNumber);
         tagPage.getPageContent().forEach(tagsLinksCreator::createLinks);
         tagsLinksCreator.createPaginationLinks(tagPage);

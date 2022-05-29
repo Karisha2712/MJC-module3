@@ -36,6 +36,6 @@ public class OrderDtoMapper implements DtoMapper<Order, OrderDto> {
         order.setPurchaseDate(purchaseDate);
         order.setCertificates(orderDto.getCertificates().stream().map(certificateDtoMapper::mapToEntity)
                 .collect(Collectors.toList()));
-        return null;
+        return order;
     }
 }

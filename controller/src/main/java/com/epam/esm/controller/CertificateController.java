@@ -30,7 +30,7 @@ public class CertificateController {
     @GetMapping
     public Page<CertificateDto> receivePageOfCertificates(
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
-            @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber,
+            @RequestParam(name = "size", required = false, defaultValue = "10") int elementsPerPageNumber,
             @RequestParam(name = "textPart", required = false, defaultValue = "") String textPart,
             @RequestParam(name = "sortBy", required = false) String sortBy,
             @RequestParam(name = "order", required = false) String orderText,

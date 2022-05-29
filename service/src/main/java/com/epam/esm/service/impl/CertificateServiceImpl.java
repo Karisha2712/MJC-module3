@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,7 +60,7 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     public void saveCertificate(CertificateDto certificateDto) {
         Certificate certificate = certificateDtoMapper.mapToEntity(certificateDto);
-        if (certificate.getTags() != null) {
+        if (certificateDto.getTags() != null) {
             certificate.setTags(retrieveNotExistingTags(certificateDto.getTags()));
         }
         certificateRepository.saveEntity(certificate);
