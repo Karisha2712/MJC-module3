@@ -8,6 +8,8 @@ import com.epam.esm.util.ControllerResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/tags")
 @AllArgsConstructor
@@ -40,9 +42,9 @@ public class TagController {
     }
 
     @PostMapping
-    public ControllerResponse createTag(@RequestBody TagDto tagDto) {
-        tagService.saveTag(tagDto);
-        return new ControllerResponse("Tag was created successfully");
+    public ControllerResponse createTag(@Valid @RequestBody TagDto tagDto) {
+        long id = tagService.saveTag(tagDto);
+        return new ControllerResponse("Tag was created successfully with id " + id);
     }
 
     @DeleteMapping("/{id}")

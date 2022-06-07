@@ -6,6 +6,7 @@ import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.exception.TagAlreadyExistsException;
 import com.epam.esm.exception.TagNotFoundException;
 import com.epam.esm.mapper.TagDtoMapper;
+import com.epam.esm.mapper.TagDtoMapperImpl;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.impl.TagServiceImpl;
@@ -66,7 +67,7 @@ class TagServiceTest {
 
     @BeforeEach
     void before() {
-        tagService = new TagServiceImpl(tagRepository, new TagDtoMapper());
+        tagService = new TagServiceImpl(tagRepository, new TagDtoMapperImpl());
     }
 
     @Test

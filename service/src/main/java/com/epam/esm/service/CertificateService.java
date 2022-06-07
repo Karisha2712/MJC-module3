@@ -11,7 +11,7 @@ public interface CertificateService {
                                                                    int currentPage,
                                                                    int elementsPerPageNumber);
 
-    void saveCertificate(CertificateDto certificateDto);
+    long saveCertificate(CertificateDto certificateDto);
 
     void removeCertificate(long id);
 

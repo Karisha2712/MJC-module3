@@ -21,8 +21,9 @@ public interface BaseRepository<T extends BaseEntity> {
     }
 
     @Transactional
-    default void saveEntity(T entity) {
-        getEntityManager().merge(entity);
+    default long saveEntity(T entity) {
+        T newEntity = getEntityManager().merge(entity);
+        return newEntity.getId();
     }
 
     @Transactional

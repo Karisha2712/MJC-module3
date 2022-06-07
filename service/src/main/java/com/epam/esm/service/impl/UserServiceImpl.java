@@ -2,11 +2,10 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.entity.Order;
-import com.epam.esm.entity.User;
 import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.exception.UserNotFoundException;
-import com.epam.esm.mapper.DtoMapper;
+import com.epam.esm.mapper.OrderDtoMapper;
+import com.epam.esm.mapper.UserDtoMapper;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.UserService;
@@ -21,9 +20,9 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    private final DtoMapper<User, UserDto> userDtoMapper;
+    private final UserDtoMapper userDtoMapper;
 
-    private final DtoMapper<Order, OrderDto> orderDtoMapper;
+    private final OrderDtoMapper orderDtoMapper;
 
     @Override
     public UserDto retrieveSingleUser(long id) {

@@ -52,11 +52,12 @@ public class CertificatesExceptionHandler {
         return new CertificatesError(message, HttpStatus.BAD_REQUEST, OrderCanNotBeEmptyException.ERROR_CODE);
     }
 
-
     @ExceptionHandler(InvalidAttributeValueException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CertificatesError handleInvalidAttributeValueException(InvalidAttributeValueException e) {
-        return new CertificatesError(e.getMessage(), HttpStatus.BAD_REQUEST, InvalidAttributeValueException.ERROR_CODE);
+        String code = HttpStatus.BAD_REQUEST.value() + InvalidAttributeValueException.ERROR_CODE;
+        String message = messageSource.getMessage(code, null, Locale.ENGLISH);
+        return new CertificatesError(message, HttpStatus.BAD_REQUEST, OrderCanNotBeEmptyException.ERROR_CODE);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

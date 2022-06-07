@@ -8,7 +8,10 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.exception.UserNotFoundException;
-import com.epam.esm.mapper.*;
+import com.epam.esm.mapper.OrderDtoMapper;
+import com.epam.esm.mapper.OrderDtoMapperImpl;
+import com.epam.esm.mapper.UserDtoMapper;
+import com.epam.esm.mapper.UserDtoMapperImpl;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.impl.UserServiceImpl;
@@ -119,8 +122,8 @@ class UserServiceTest {
 
     @BeforeEach
     void before() {
-        DtoMapper<Order, OrderDto> orderDtoMapper = new OrderDtoMapper(new CertificateDtoMapper(new TagDtoMapper()));
-        userService = new UserServiceImpl(userRepository, new UserDtoMapper(), orderDtoMapper);
+        OrderDtoMapper orderDtoMapper = new OrderDtoMapperImpl();
+        userService = new UserServiceImpl(userRepository, new UserDtoMapperImpl(), orderDtoMapper);
     }
 
     @Test

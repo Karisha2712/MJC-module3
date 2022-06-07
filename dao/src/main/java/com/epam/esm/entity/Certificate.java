@@ -26,6 +26,9 @@ public class Certificate extends BaseEntity {
     @Column
     private BigDecimal price;
 
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 

@@ -8,9 +8,9 @@ import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.exception.InvalidAttributeValueException;
 import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.filter.CertificatesFilter;
-import com.epam.esm.mapper.CertificateDtoMapper;
-import com.epam.esm.mapper.DtoMapper;
+import com.epam.esm.mapper.CertificateDtoMapperImpl;
 import com.epam.esm.mapper.TagDtoMapper;
+import com.epam.esm.mapper.TagDtoMapperImpl;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.TagRepository;
@@ -136,9 +136,9 @@ class CertificateServiceTest {
 
     @BeforeEach
     void before() {
-        DtoMapper<Tag, TagDto> tagDtoMapper = new TagDtoMapper();
+        TagDtoMapper tagDtoMapper = new TagDtoMapperImpl();
         certificateService = new CertificateServiceImpl(certificateRepository,
-                tagRepository, new CertificateDtoMapper(tagDtoMapper), tagDtoMapper);
+                tagRepository, new CertificateDtoMapperImpl(), tagDtoMapper);
     }
 
     @Test

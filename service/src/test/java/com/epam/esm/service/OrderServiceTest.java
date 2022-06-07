@@ -11,10 +11,8 @@ import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.exception.OrderNotFoundException;
 import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.exception.UserNotFoundException;
-import com.epam.esm.mapper.CertificateDtoMapper;
-import com.epam.esm.mapper.DtoMapper;
 import com.epam.esm.mapper.OrderDtoMapper;
-import com.epam.esm.mapper.TagDtoMapper;
+import com.epam.esm.mapper.OrderDtoMapperImpl;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.OrderRepository;
@@ -158,7 +156,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void before() {
-        DtoMapper<Order, OrderDto> orderDtoMapper = new OrderDtoMapper(new CertificateDtoMapper(new TagDtoMapper()));
+        OrderDtoMapper orderDtoMapper = new OrderDtoMapperImpl();
         orderService = new OrderServiceImpl(orderRepository, userRepository, certificateRepository, orderDtoMapper);
     }
 

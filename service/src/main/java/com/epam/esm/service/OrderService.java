@@ -8,5 +8,5 @@ public interface OrderService {
 
     Page<OrderDto> retrievePageOfOrders(int currentPage, int elementsPerPageNumber);
 
-    void saveOrder(long userId, OrderDto orderDto);
+    long saveOrder(long userId, OrderDto orderDto);
 }

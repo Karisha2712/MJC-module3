@@ -2,26 +2,12 @@ package com.epam.esm.mapper;
 
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.User;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 
-@Component
-@AllArgsConstructor
-public class UserDtoMapper implements DtoMapper<User, UserDto> {
+@Mapper(componentModel = "spring")
+public interface UserDtoMapper {
 
-    @Override
-    public UserDto mapToDto(User user) {
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setLogin(user.getLogin());
-        return userDto;
-    }
+    UserDto mapToDto(User user);
 
-    @Override
-    public User mapToEntity(UserDto userDto) {
-        User user = new User();
-        user.setId(userDto.getId());
-        user.setLogin(userDto.getLogin());
-        return user;
-    }
+    User mapToEntity(UserDto userDto);
 }

@@ -11,6 +11,7 @@ import com.epam.esm.util.ControllerResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Set;
 
 @RestController
@@ -51,9 +52,9 @@ public class CertificateController {
     }
 
     @PostMapping
-    public ControllerResponse createCertificate(@RequestBody CertificateDto certificateDto) {
-        certificateService.saveCertificate(certificateDto);
-        return new ControllerResponse("Certificate was created successfully");
+    public ControllerResponse createCertificate(@Valid @RequestBody CertificateDto certificateDto) {
+        long id = certificateService.saveCertificate(certificateDto);
+        return new ControllerResponse("Certificate was created successfully with id " + id);
     }
 
     @PatchMapping("/{id}")

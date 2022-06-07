@@ -19,6 +19,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CertificateRepositoryImpl implements CertificateRepository {
     private static final String TITLE = "title";
+    private static final String IS_DELETED = "isDeleted";
     private static final String ID = "id";
     private static final String PERCENT = "%";
     private static final String TAGS = "tags";
@@ -83,6 +84,7 @@ public class CertificateRepositoryImpl implements CertificateRepository {
                 predicates.add(criteriaBuilder.equal(tagsJoin.get(TAG_NAME), name));
             });
         }
+        predicates.add(criteriaBuilder.isFalse(root.get(IS_DELETED)));
         criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
     }
 

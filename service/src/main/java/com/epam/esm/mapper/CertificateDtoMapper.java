@@ -1,47 +1,20 @@
 package com.epam.esm.mapper;
 
 import com.epam.esm.dto.CertificateDto;
-import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Certificate;
-import com.epam.esm.entity.Tag;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.stream.Collectors;
+@Mapper(componentModel = "spring")
+public interface CertificateDtoMapper {
 
-@Component
-@AllArgsConstructor
-public class CertificateDtoMapper implements DtoMapper<Certificate, CertificateDto> {
-    private final DtoMapper<Tag, TagDto> tagDtoMapper;
+    String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-    public CertificateDto mapToDto(Certificate certificate) {
-        CertificateDto certificateDto = new CertificateDto();
-        certificateDto.setId(certificate.getId());
-        certificateDto.setTitle(certificate.getTitle());
-        certificateDto.setDescription(certificate.getDescription());
-        certificateDto.setDuration(certificate.getDuration());
-        certificateDto.setPrice(certificate.getPrice());
-        certificateDto.setCreatedDate(DateTimeFormatter.ISO_DATE_TIME
-                .format(certificate.getCreatedDate()));
-        certificateDto.setLastUpdateDate(DateTimeFormatter.ISO_DATE_TIME
-                .format(certificate.getLastUpdateDate()));
-        certificateDto.setTags(certificate.getTags().stream().map(tagDtoMapper::mapToDto)
-                .collect(Collectors.toList()));
-        return certificateDto;
-    }
+    @Mapping(target = "tags", defaultExpression = "java(com.epam.esm.service.mapper.TagDtoMapper.mapToTag())")
+    Certificate mapToEntity(CertificateDto certificateDto);
 
-    public Certificate mapToEntity(CertificateDto certificateDto) {
-        Certificate certificate = new Certificate();
-        certificate.setTitle(certificateDto.getTitle());
-        certificate.setDuration(certificateDto.getDuration());
-        certificate.setPrice(certificateDto.getPrice());
-        certificate.setDescription(certificateDto.getDescription());
-        LocalDateTime createdDate = LocalDateTime.now();
-        certificate.setCreatedDate(createdDate);
-        certificate.setLastUpdateDate(createdDate);
-        return certificate;
-    }
-
+    @Mapping(target = "createdDate", dateFormat = DATE_FORMAT)
+    @Mapping(target = "lastUpdateDate", dateFormat = DATE_FORMAT)
+    @Mapping(target = "tags", defaultExpression = "java(com.epam.esm.service.mapper.TagDtoMapper.mapToTagDto())")
+    CertificateDto mapToDto(Certificate certificate);
 }

@@ -4,8 +4,11 @@ import com.epam.esm.dto.OrderDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
-import com.epam.esm.exception.*;
-import com.epam.esm.mapper.DtoMapper;
+import com.epam.esm.exception.CertificateNotFoundException;
+import com.epam.esm.exception.OrderNotFoundException;
+import com.epam.esm.exception.PageNotFoundException;
+import com.epam.esm.exception.UserNotFoundException;
+import com.epam.esm.mapper.OrderDtoMapper;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.OrderRepository;
@@ -29,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final CertificateRepository certificateRepository;
 
-    private final DtoMapper<Order, OrderDto> orderDtoMapper;
+    private final OrderDtoMapper orderDtoMapper;
 
     @Override
     public OrderDto retrieveSingleOrder(long id) {
@@ -52,11 +55,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void saveOrder(long userId, OrderDto orderDto) {
+    public long saveOrder(long userId, OrderDto orderDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        if (orderDto.getCertificates().isEmpty()) {
-            throw new OrderCanNotBeEmptyException();
-        }
         List<Certificate> certificates = orderDto.getCertificates()
                 .stream()
                 .map(certificate ->
@@ -69,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
         order.setCertificates(certificates);
         BigDecimal cost = certificates.stream().map(Certificate::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         order.setCost(cost);
-        orderRepository.saveEntity(order);
+        return orderRepository.saveEntity(order);
     }
 
 }

@@ -5,7 +5,7 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.exception.TagAlreadyExistsException;
 import com.epam.esm.exception.TagNotFoundException;
-import com.epam.esm.mapper.DtoMapper;
+import com.epam.esm.mapper.TagDtoMapper;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.TagService;
@@ -22,12 +22,12 @@ public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
 
-    private final DtoMapper<Tag, TagDto> tagDtoMapper;
+    private final TagDtoMapper tagDtoMapper;
 
     @Override
     public TagDto retrieveSingleTag(long id) {
         return tagRepository.findById(id)
-                .map(tagDtoMapper::mapToDto)
+                .map(tagDtoMapper::mapToEntity)
                 .orElseThrow(() -> new TagNotFoundException(id));
     }
 
@@ -38,12 +38,12 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void saveTag(TagDto tagDto) {
+    public long saveTag(TagDto tagDto) {
         Optional<Tag> optionalTag = tagRepository.findByName(tagDto.getName());
         if (optionalTag.isPresent()) {
             throw new TagAlreadyExistsException(tagDto.getName());
         } else {
-            tagRepository.saveEntity(tagDtoMapper.mapToEntity(tagDto));
+            return tagRepository.saveEntity(tagDtoMapper.mapToDto(tagDto));
         }
     }
 
@@ -56,14 +56,14 @@ public class TagServiceImpl implements TagService {
         }
         List<TagDto> tagDtos = tagRepository.findAll(currentPage, elementsPerPageNumber)
                 .stream()
-                .map(tagDtoMapper::mapToDto)
+                .map(tagDtoMapper::mapToEntity)
                 .collect(Collectors.toList());
         return new Page<>(currentPage, totalPageNumber, elementsPerPageNumber, tagDtos);
     }
 
     @Override
     public TagDto retrieveMostWidelyUsedTag() {
-        return tagRepository.findMostWidelyUsedTag().map(tagDtoMapper::mapToDto)
+        return tagRepository.findMostWidelyUsedTag().map(tagDtoMapper::mapToEntity)
                 .orElseThrow(() -> new TagNotFoundException(0));
     }
 }

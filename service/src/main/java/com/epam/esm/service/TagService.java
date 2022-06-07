@@ -8,7 +8,7 @@ public interface TagService {
 
     void removeTag(long id);
 
-    void saveTag(TagDto tagDto);
+    long saveTag(TagDto tagDto);
 
     Page<TagDto> retrievePageOfTags(int currentPage, int elementsPerPageNumber);
 

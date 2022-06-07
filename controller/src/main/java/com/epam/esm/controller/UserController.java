@@ -11,6 +11,8 @@ import com.epam.esm.util.ControllerResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
@@ -50,8 +52,8 @@ public class UserController {
 
     @PostMapping("/{id}/orders")
     public ControllerResponse createOrder(@PathVariable Long id,
-                                          @RequestBody OrderDto orderDto) {
-        orderService.saveOrder(id, orderDto);
-        return new ControllerResponse("Order was created successfully");
+                                          @Valid @RequestBody OrderDto orderDto) {
+        long orderId = orderService.saveOrder(id, orderDto);
+        return new ControllerResponse("Order was created successfully with id " + orderId);
     }
 }
