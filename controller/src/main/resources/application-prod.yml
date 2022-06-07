@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/gift_certificates2?serverTimezone=UTC
+    username: root
+    password: 27122001
+    type: com.zaxxer.hikari.HikariDataSource
