@@ -6,7 +6,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface TagDtoMapper {
-
     TagDto mapToEntity(Tag tag);
 
     Tag mapToDto(TagDto tagDto);

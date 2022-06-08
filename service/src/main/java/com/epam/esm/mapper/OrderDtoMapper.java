@@ -5,12 +5,11 @@ import com.epam.esm.entity.Order;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CertificateDtoMapper.class})
 public interface OrderDtoMapper {
 
-    String DATE_FORMAT = "yyyy-mm-dd'T'hh:mm:ss'Z'";
+    String DATE_FORMAT = "yyyy-MM-dd'T'hh:mm:ss'Z'";
 
     @Mapping(target = "purchaseDate", dateFormat = DATE_FORMAT)
-    @Mapping(target = "certificates", defaultExpression = "java(com.epam.esm.service.mapper.CertificateDtoMapper.mapToDto())")
     OrderDto mapToDto(Order order);
 }

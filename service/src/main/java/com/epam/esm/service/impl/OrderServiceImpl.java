@@ -4,10 +4,7 @@ import com.epam.esm.dto.OrderDto;
 import com.epam.esm.entity.Certificate;
 import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
-import com.epam.esm.exception.CertificateNotFoundException;
-import com.epam.esm.exception.OrderNotFoundException;
-import com.epam.esm.exception.PageNotFoundException;
-import com.epam.esm.exception.UserNotFoundException;
+import com.epam.esm.exception.*;
 import com.epam.esm.mapper.OrderDtoMapper;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.CertificateRepository;
@@ -42,6 +39,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Page<OrderDto> retrievePageOfOrders(int currentPage, int elementsPerPageNumber) {
+        if (currentPage <= 0 || elementsPerPageNumber <= 0) {
+            throw new InvalidAttributeValueException();
+        }
         int totalPageNumber = (int) (orderRepository.countAllElements() / elementsPerPageNumber)
                 + (orderRepository.countAllElements() % elementsPerPageNumber > 0 ? 1 : 0);
         if (currentPage > totalPageNumber) {

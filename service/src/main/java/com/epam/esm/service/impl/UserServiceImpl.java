@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.exception.InvalidAttributeValueException;
 import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.exception.UserNotFoundException;
 import com.epam.esm.mapper.OrderDtoMapper;
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserDto> retrievePageOfUsers(int currentPage, int elementsPerPageNumber) {
+        if (currentPage <= 0 || elementsPerPageNumber <= 0) {
+            throw new InvalidAttributeValueException();
+        }
         int totalPageNumber = (int) (userRepository.countAllElements() / elementsPerPageNumber)
                 + (userRepository.countAllElements() % elementsPerPageNumber > 0 ? 1 : 0);
         if (currentPage > totalPageNumber) {
@@ -46,6 +50,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<OrderDto> retrieveUserOrders(long id, int currentPage, int elementsPerPageNumber) {
+        if (currentPage <= 0 || elementsPerPageNumber <= 0) {
+            throw new InvalidAttributeValueException();
+        }
         int totalPageNumber = (int) (userRepository.countUserOrders(id) / elementsPerPageNumber)
                 + (userRepository.countUserOrders(id) % elementsPerPageNumber > 0 ? 1 : 0);
         if (currentPage > totalPageNumber) {

@@ -44,7 +44,7 @@ public class CertificateServiceImpl implements CertificateService {
     public Page<CertificateDto> retrievePageOfCertificatesFoundWithFilter(CertificatesFilter filter,
                                                                           int currentPage,
                                                                           int elementsPerPageNumber) {
-        if (filter.isFilterParamsNotValid()) {
+        if (currentPage <= 0 || elementsPerPageNumber <= 0 || filter.isFilterParamsNotValid()) {
             throw new InvalidAttributeValueException();
         }
         int totalPageNumber = (int) (certificateRepository.countFilteredElements(filter) / elementsPerPageNumber)

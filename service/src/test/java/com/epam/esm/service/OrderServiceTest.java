@@ -11,8 +11,10 @@ import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.exception.OrderNotFoundException;
 import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.exception.UserNotFoundException;
+import com.epam.esm.mapper.CertificateDtoMapperImpl;
 import com.epam.esm.mapper.OrderDtoMapper;
 import com.epam.esm.mapper.OrderDtoMapperImpl;
+import com.epam.esm.mapper.TagDtoMapperImpl;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.OrderRepository;
@@ -26,6 +28,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -37,6 +41,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest(classes = {OrderDtoMapperImpl.class, CertificateDtoMapperImpl.class, TagDtoMapperImpl.class})
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
     @InjectMocks
@@ -47,6 +52,8 @@ class OrderServiceTest {
     private CertificateRepository certificateRepository;
     @Mock
     private UserRepository userRepository;
+    @Autowired
+    private OrderDtoMapper orderDtoMapper;
 
     private static final List<OrderDto> orderDtos = new ArrayList<>();
     private static final List<Order> orders = new ArrayList<>();
@@ -54,7 +61,7 @@ class OrderServiceTest {
 
     @BeforeAll
     static void initialize() {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
         List<Certificate> certificates = new ArrayList<>();
         List<CertificateDto> certificateDtos = new ArrayList<>();
 
@@ -79,15 +86,15 @@ class OrderServiceTest {
         certificateDto1.setPrice(new BigDecimal(1));
         certificateDto1.setDuration(100);
         certificateDto1.setDescription("description1");
-        certificateDto1.setCreatedDate("2022-04-19T11:00:00");
-        certificateDto1.setLastUpdateDate("2022-04-19T11:00:00");
+        certificateDto1.setCreatedDate("2022-04-19T11:00:00Z");
+        certificateDto1.setLastUpdateDate("2022-04-19T11:00:00Z");
         certificateDto2.setId(2L);
         certificateDto2.setTitle("title2");
         certificateDto2.setPrice(new BigDecimal(2));
         certificateDto2.setDuration(200);
         certificateDto2.setDescription("description2");
-        certificateDto2.setCreatedDate("2022-04-19T12:00:00");
-        certificateDto2.setLastUpdateDate("2022-04-19T12:00:00");
+        certificateDto2.setCreatedDate("2022-04-19T12:00:00Z");
+        certificateDto2.setLastUpdateDate("2022-04-19T12:00:00Z");
         certificateDto1.setTags(List.of(tagDto1, tagDto2));
         certificateDto2.setTags(List.of(tagDto2));
         certificateDtos.add(certificateDto1);
@@ -100,15 +107,15 @@ class OrderServiceTest {
         certificate1.setPrice(new BigDecimal(1));
         certificate1.setDuration(100);
         certificate1.setDescription("description1");
-        certificate1.setCreatedDate(LocalDateTime.parse("2022-04-19T11:00:00", formatter));
-        certificate1.setLastUpdateDate(LocalDateTime.parse("2022-04-19T11:00:00", formatter));
+        certificate1.setCreatedDate(LocalDateTime.parse("2022-04-19T11:00:00Z", formatter));
+        certificate1.setLastUpdateDate(LocalDateTime.parse("2022-04-19T11:00:00Z", formatter));
         certificate2.setId(2L);
         certificate2.setTitle("title2");
         certificate2.setPrice(new BigDecimal(2));
         certificate2.setDuration(200);
         certificate2.setDescription("description2");
-        certificate2.setCreatedDate(LocalDateTime.parse("2022-04-19T12:00:00", formatter));
-        certificate2.setLastUpdateDate(LocalDateTime.parse("2022-04-19T12:00:00", formatter));
+        certificate2.setCreatedDate(LocalDateTime.parse("2022-04-19T12:00:00Z", formatter));
+        certificate2.setLastUpdateDate(LocalDateTime.parse("2022-04-19T12:00:00Z", formatter));
         certificate1.setTags(List.of(tag1, tag2));
         certificate2.setTags(List.of(tag2));
         certificates.add(certificate1);
@@ -128,13 +135,13 @@ class OrderServiceTest {
         Order order1 = new Order();
         order1.setId(1L);
         order1.setCost(new BigDecimal(3));
-        order1.setPurchaseDate(LocalDateTime.parse("2022-05-27T11:00:00", formatter));
+        order1.setPurchaseDate(LocalDateTime.parse("2022-05-27T11:00:00Z", formatter));
         order1.setCertificates(certificates);
         order1.setUser(user1);
         Order order2 = new Order();
         order2.setId(2L);
         order2.setCost(new BigDecimal(1));
-        order2.setPurchaseDate(LocalDateTime.parse("2022-05-27T12:00:00", formatter));
+        order2.setPurchaseDate(LocalDateTime.parse("2022-05-27T12:00:00Z", formatter));
         order2.setCertificates(List.of(certificate1));
         order2.setUser(user2);
         orders.add(order1);
@@ -143,12 +150,12 @@ class OrderServiceTest {
         OrderDto orderDto1 = new OrderDto();
         orderDto1.setId(1L);
         orderDto1.setCost(new BigDecimal(3));
-        orderDto1.setPurchaseDate("2022-05-27T11:00:00");
+        orderDto1.setPurchaseDate("2022-05-27T11:00:00Z");
         orderDto1.setCertificates(certificateDtos);
         OrderDto orderDto2 = new OrderDto();
         orderDto2.setId(2L);
         orderDto2.setCost(new BigDecimal(1));
-        orderDto2.setPurchaseDate("2022-05-27T12:00:00");
+        orderDto2.setPurchaseDate("2022-05-27T12:00:00Z");
         orderDto2.setCertificates(List.of(certificateDto1));
         orderDtos.add(orderDto1);
         orderDtos.add(orderDto2);
@@ -156,7 +163,6 @@ class OrderServiceTest {
 
     @BeforeEach
     void before() {
-        OrderDtoMapper orderDtoMapper = new OrderDtoMapperImpl();
         orderService = new OrderServiceImpl(orderRepository, userRepository, certificateRepository, orderDtoMapper);
     }
 

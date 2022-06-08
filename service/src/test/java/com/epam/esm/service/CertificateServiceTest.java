@@ -8,6 +8,7 @@ import com.epam.esm.exception.CertificateNotFoundException;
 import com.epam.esm.exception.InvalidAttributeValueException;
 import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.filter.CertificatesFilter;
+import com.epam.esm.mapper.CertificateDtoMapper;
 import com.epam.esm.mapper.CertificateDtoMapperImpl;
 import com.epam.esm.mapper.TagDtoMapper;
 import com.epam.esm.mapper.TagDtoMapperImpl;
@@ -23,6 +24,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -32,6 +35,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest(classes = {CertificateDtoMapperImpl.class, TagDtoMapperImpl.class})
 @ExtendWith(MockitoExtension.class)
 class CertificateServiceTest {
     @InjectMocks
@@ -40,6 +44,10 @@ class CertificateServiceTest {
     private CertificateRepository certificateRepository;
     @Mock
     private TagRepository tagRepository;
+    @Autowired
+    private CertificateDtoMapper certificateDtoMapper;
+    @Autowired
+    private TagDtoMapper tagDtoMapper;
 
     private static final List<CertificateDto> certificateDtos = new ArrayList<>();
     private static final List<Certificate> certificates = new ArrayList<>();
@@ -47,7 +55,7 @@ class CertificateServiceTest {
 
     @BeforeAll
     static void initialize() {
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
         TagDto tagDto1 = new TagDto();
         TagDto tagDto2 = new TagDto();
         TagDto tagDto3 = new TagDto();
@@ -79,22 +87,22 @@ class CertificateServiceTest {
         certificateDto1.setPrice(new BigDecimal(1));
         certificateDto1.setDuration(100);
         certificateDto1.setDescription("description1");
-        certificateDto1.setCreatedDate("2022-04-19T11:00:00");
-        certificateDto1.setLastUpdateDate("2022-04-19T11:00:00");
+        certificateDto1.setCreatedDate("2022-04-19T11:00:00Z");
+        certificateDto1.setLastUpdateDate("2022-04-19T11:00:00Z");
         certificateDto2.setId(2L);
         certificateDto2.setTitle("title2");
         certificateDto2.setPrice(new BigDecimal(2));
         certificateDto2.setDuration(200);
         certificateDto2.setDescription("description2");
-        certificateDto2.setCreatedDate("2022-04-19T12:00:00");
-        certificateDto2.setLastUpdateDate("2022-04-19T12:00:00");
+        certificateDto2.setCreatedDate("2022-04-19T12:00:00Z");
+        certificateDto2.setLastUpdateDate("2022-04-19T12:00:00Z");
         certificateDto3.setId(3L);
         certificateDto3.setTitle("title3");
         certificateDto3.setPrice(new BigDecimal(3));
         certificateDto3.setDuration(300);
         certificateDto3.setDescription("description3");
-        certificateDto3.setCreatedDate("2022-04-19T13:00:00");
-        certificateDto3.setLastUpdateDate("2022-04-19T13:00:00");
+        certificateDto3.setCreatedDate("2022-04-19T13:00:00Z");
+        certificateDto3.setLastUpdateDate("2022-04-19T13:00:00Z");
         certificateDto1.setTags(List.of(tagDto1, tagDto2));
         certificateDto2.setTags(List.of(tagDto2, tagDto3));
         certificateDto3.setTags(List.of(tagDto1, tagDto3));
@@ -110,22 +118,22 @@ class CertificateServiceTest {
         certificate1.setPrice(new BigDecimal(1));
         certificate1.setDuration(100);
         certificate1.setDescription("description1");
-        certificate1.setCreatedDate(LocalDateTime.parse("2022-04-19T11:00:00", formatter));
-        certificate1.setLastUpdateDate(LocalDateTime.parse("2022-04-19T11:00:00", formatter));
+        certificate1.setCreatedDate(LocalDateTime.parse("2022-04-19T11:00:00Z", formatter));
+        certificate1.setLastUpdateDate(LocalDateTime.parse("2022-04-19T11:00:00Z", formatter));
         certificate2.setId(2L);
         certificate2.setTitle("title2");
         certificate2.setPrice(new BigDecimal(2));
         certificate2.setDuration(200);
         certificate2.setDescription("description2");
-        certificate2.setCreatedDate(LocalDateTime.parse("2022-04-19T12:00:00", formatter));
-        certificate2.setLastUpdateDate(LocalDateTime.parse("2022-04-19T12:00:00", formatter));
+        certificate2.setCreatedDate(LocalDateTime.parse("2022-04-19T12:00:00Z", formatter));
+        certificate2.setLastUpdateDate(LocalDateTime.parse("2022-04-19T12:00:00Z", formatter));
         certificate3.setId(3L);
         certificate3.setTitle("title3");
         certificate3.setPrice(new BigDecimal(3));
         certificate3.setDuration(300);
         certificate3.setDescription("description3");
-        certificate3.setCreatedDate(LocalDateTime.parse("2022-04-19T13:00:00", formatter));
-        certificate3.setLastUpdateDate(LocalDateTime.parse("2022-04-19T13:00:00", formatter));
+        certificate3.setCreatedDate(LocalDateTime.parse("2022-04-19T13:00:00Z", formatter));
+        certificate3.setLastUpdateDate(LocalDateTime.parse("2022-04-19T13:00:00Z", formatter));
         certificate1.setTags(List.of(tag1, tag2));
         certificate2.setTags(List.of(tag2, tag3));
         certificate3.setTags(List.of(tag1, tag3));
@@ -136,9 +144,8 @@ class CertificateServiceTest {
 
     @BeforeEach
     void before() {
-        TagDtoMapper tagDtoMapper = new TagDtoMapperImpl();
         certificateService = new CertificateServiceImpl(certificateRepository,
-                tagRepository, new CertificateDtoMapperImpl(), tagDtoMapper);
+                tagRepository, certificateDtoMapper, tagDtoMapper);
     }
 
     @Test
