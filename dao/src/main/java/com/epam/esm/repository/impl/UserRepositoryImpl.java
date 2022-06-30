@@ -11,10 +11,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
-    public static final String USERS_ID = "user";
+    private static final String USERS_ID = "user";
+    private static final String USER_LOGIN = "login";
 
     @PersistenceContext
     EntityManager entityManager;
@@ -27,6 +29,17 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Class<User> getEntityClass() {
         return User.class;
+    }
+
+    @Override
+    public Optional<User> findByLogin(String login) {
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        Root<User> root = criteriaQuery.from(User.class);
+        criteriaQuery.where(criteriaBuilder.equal(root.get(USER_LOGIN), login));
+        criteriaQuery.select(root);
+        List<User> users = getEntityManager().createQuery(criteriaQuery).getResultList();
+        return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
     }
 
     @Override

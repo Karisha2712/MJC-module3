@@ -5,6 +5,8 @@ import com.epam.esm.dto.UserDto;
 import com.epam.esm.pagination.Page;
 
 public interface UserService {
+    void registerUser(UserDto userDto);
+
     UserDto retrieveSingleUser(long id);
 
     Page<UserDto> retrievePageOfUsers(int currentPage, int elementsPerPageNumber);

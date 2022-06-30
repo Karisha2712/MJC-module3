@@ -56,4 +56,10 @@ public class UserController {
         long orderId = orderService.saveOrder(id, orderDto);
         return new ControllerResponse("Order was created successfully with id " + orderId);
     }
+
+    @PostMapping("/registration")
+    public ControllerResponse registerUser(@Valid @RequestBody UserDto userDto) {
+        userService.registerUser(userDto);
+        return new ControllerResponse("User was successfully registered");
+    }
 }

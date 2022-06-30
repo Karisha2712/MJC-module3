@@ -3,8 +3,9 @@ package com.epam.esm.entity;
 import lombok.Getter;
 
 public enum UserRole {
-    USER(1),
-    ADMIN(2);
+    GUEST(1),
+    USER(2),
+    ADMIN(3);
 
     @Getter
     private final int roleId;

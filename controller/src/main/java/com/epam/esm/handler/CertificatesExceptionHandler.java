@@ -1,9 +1,6 @@
 package com.epam.esm.handler;
 
-import com.epam.esm.exception.InvalidAttributeValueException;
-import com.epam.esm.exception.OrderCanNotBeEmptyException;
-import com.epam.esm.exception.ResourceNotFoundException;
-import com.epam.esm.exception.TagAlreadyExistsException;
+import com.epam.esm.exception.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,11 +34,19 @@ public class CertificatesExceptionHandler {
     }
 
     @ExceptionHandler(TagAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CertificatesError handleTagAlreadyExistsException(TagAlreadyExistsException e) {
-        String code = HttpStatus.NOT_FOUND.value() + TagAlreadyExistsException.ERROR_CODE;
+        String code = HttpStatus.BAD_REQUEST.value() + TagAlreadyExistsException.ERROR_CODE;
         String message = messageSource.getMessage(code, e.getArgs(), Locale.ENGLISH);
-        return new CertificatesError(message, HttpStatus.NOT_FOUND, TagAlreadyExistsException.ERROR_CODE);
+        return new CertificatesError(message, HttpStatus.BAD_REQUEST, TagAlreadyExistsException.ERROR_CODE);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CertificatesError handleUserAlreadyExistsException(UserAlreadyExistsException e) {
+        String code = HttpStatus.BAD_REQUEST.value() + UserAlreadyExistsException.ERROR_CODE;
+        String message = messageSource.getMessage(code, null, Locale.ENGLISH);
+        return new CertificatesError(message, HttpStatus.BAD_REQUEST, UserAlreadyExistsException.ERROR_CODE);
     }
 
     @ExceptionHandler(OrderCanNotBeEmptyException.class)

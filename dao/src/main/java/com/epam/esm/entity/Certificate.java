@@ -35,9 +35,6 @@ public class Certificate extends BaseEntity {
     @Column(name = "last_updated_date")
     private LocalDateTime lastUpdateDate;
 
-    @Column(name = "user_roles_id")
-    private UserRole role;
-
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(name = "certificates_has_tags",
             joinColumns = @JoinColumn(name = "certificates_id"),

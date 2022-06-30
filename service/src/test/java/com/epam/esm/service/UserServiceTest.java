@@ -10,7 +10,6 @@ import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.exception.UserNotFoundException;
 import com.epam.esm.mapper.OrderDtoMapper;
 import com.epam.esm.mapper.OrderDtoMapperImpl;
-import com.epam.esm.mapper.UserDtoMapper;
 import com.epam.esm.mapper.UserDtoMapperImpl;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.UserRepository;
@@ -23,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -123,7 +123,7 @@ class UserServiceTest {
     @BeforeEach
     void before() {
         OrderDtoMapper orderDtoMapper = new OrderDtoMapperImpl();
-        userService = new UserServiceImpl(userRepository, new UserDtoMapperImpl(), orderDtoMapper);
+        userService = new UserServiceImpl(userRepository, new UserDtoMapperImpl(), orderDtoMapper, new BCryptPasswordEncoder());
     }
 
     @Test
