@@ -5,6 +5,7 @@ import com.epam.esm.hateoas.OrdersLinksCreator;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.service.OrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,6 +16,7 @@ public class OrderController {
     private final OrdersLinksCreator ordersLinksCreator;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public Page<OrderDto> receivePageOfOrders(
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
             @RequestParam(name = "size", required = false, defaultValue = "2") int elementsPerPageNumber) {
@@ -25,6 +27,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public OrderDto receiveSingleOrder(@PathVariable Long id) {
         OrderDto order = orderService.retrieveSingleOrder(id);
         ordersLinksCreator.createLinks(order);

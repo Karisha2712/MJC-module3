@@ -20,6 +20,6 @@ public class User extends BaseEntity {
     private String password;
 
     @Column(name = "user_roles_id")
-    private UserRole role;
+    private int roleId;
 
 }

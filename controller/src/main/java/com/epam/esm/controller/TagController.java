@@ -6,6 +6,7 @@ import com.epam.esm.pagination.Page;
 import com.epam.esm.service.TagService;
 import com.epam.esm.util.ControllerResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,6 +19,7 @@ public class TagController {
     private final TagsLinksCreator tagsLinksCreator;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public TagDto receiveSingleTag(@PathVariable Long id) {
         TagDto tag = tagService.retrieveSingleTag(id);
         tagsLinksCreator.createLinks(tag);
@@ -25,6 +27,7 @@ public class TagController {
     }
 
     @GetMapping("/most-widely-used")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public TagDto receiveMostWidelyUsedTag() {
         TagDto tag = tagService.retrieveMostWidelyUsedTag();
         tagsLinksCreator.createLinks(tag);
@@ -32,6 +35,7 @@ public class TagController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','ROLE_USER')")
     public Page<TagDto> receivePageOfTags(
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
             @RequestParam(name = "size", required = false, defaultValue = "10") int elementsPerPageNumber) {
@@ -42,12 +46,14 @@ public class TagController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ControllerResponse createTag(@Valid @RequestBody TagDto tagDto) {
         long id = tagService.saveTag(tagDto);
         return new ControllerResponse("Tag was created successfully with id " + id);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ControllerResponse deleteTag(@PathVariable Long id) {
         tagService.removeTag(id);
         return new ControllerResponse("Tag was deleted successfully");

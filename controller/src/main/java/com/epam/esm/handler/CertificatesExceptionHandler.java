@@ -1,7 +1,6 @@
 package com.epam.esm.handler;
 
 import com.epam.esm.exception.*;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
@@ -95,21 +94,5 @@ public class CertificatesExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public CertificatesError handleRuntimeException(RuntimeException e) {
         return new CertificatesError(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @Data
-    private static class CertificatesError {
-        private String errorCode;
-        private String errorMessage;
-
-        public CertificatesError(String errorMessage, HttpStatus status, String errorCode) {
-            this.errorCode = status.value() + errorCode;
-            this.errorMessage = errorMessage;
-        }
-
-        public CertificatesError(String errorMessage, HttpStatus status) {
-            this.errorCode = String.valueOf(status.value());
-            this.errorMessage = errorMessage;
-        }
     }
 }

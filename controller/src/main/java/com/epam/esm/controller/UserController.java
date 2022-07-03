@@ -9,6 +9,7 @@ import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
 import com.epam.esm.util.ControllerResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ public class UserController {
     private final OrdersLinksCreator ordersLinksCreator;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public UserDto receiveSingleUser(@PathVariable Long id) {
         UserDto user = userService.retrieveSingleUser(id);
         usersLinksCreator.createLinks(user);
@@ -30,6 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/orders")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public Page<OrderDto> receiveUserOrders(
             @PathVariable Long id,
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
@@ -41,6 +44,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public Page<UserDto> receivePageOfUsers(
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
             @RequestParam(name = "size", required = false, defaultValue = "10") int elementsPerPageNumber) {
@@ -51,6 +55,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}/orders")
+    @PreAuthorize("(hasRole('USER') and #id == authentication.principal.id)")
     public ControllerResponse createOrder(@PathVariable Long id,
                                           @Valid @RequestBody OrderDto orderDto) {
         long orderId = orderService.saveOrder(id, orderDto);
@@ -58,7 +63,8 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ControllerResponse registerUser(@Valid @RequestBody UserDto userDto) {
+    @PreAuthorize("permitAll()")
+    public ControllerResponse registerUser(@RequestBody UserDto userDto) {
         userService.registerUser(userDto);
         return new ControllerResponse("User was successfully registered");
     }
