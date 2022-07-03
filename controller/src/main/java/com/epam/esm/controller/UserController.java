@@ -64,7 +64,7 @@ public class UserController {
 
     @PostMapping("/registration")
     @PreAuthorize("permitAll()")
-    public ControllerResponse registerUser(@RequestBody UserDto userDto) {
+    public ControllerResponse registerUser(@Valid @RequestBody UserDto userDto) {
         userService.registerUser(userDto);
         return new ControllerResponse("User was successfully registered");
     }

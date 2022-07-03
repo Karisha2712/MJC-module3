@@ -42,7 +42,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         User user = new User();
         user.setLogin(userDto.getLogin());
-        user.setRoleId(UserRole.ROLE_USER.getRoleId());
+        UserRole userRole = (UserRole.ROLE_ADMIN).toString().equals(userDto.getUserRole()) ?
+                UserRole.ROLE_ADMIN : UserRole.ROLE_USER;
+        user.setRoleId(userRole.getRoleId());
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         user.setPassword(encodedPassword);
         userRepository.saveEntity(user);
@@ -95,7 +97,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("User was not found")); //TODO change exception
+                .orElseThrow(() -> new UsernameNotFoundException("User was not found"));
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(UserRole.getRoleById(user.getRoleId()).toString());
         return new CustomUserDetails(user.getId(), user.getLogin(), user.getPassword(), authority);
     }
