@@ -40,6 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.authorizeRequests()
+                .antMatchers("/certificates", "/certificates/*", "/users/registration").permitAll()
+                .anyRequest().authenticated();
         http.formLogin()
                 .failureHandler(handler)
                 .and()

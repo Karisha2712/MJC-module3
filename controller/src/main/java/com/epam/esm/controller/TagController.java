@@ -35,7 +35,7 @@ public class TagController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','ROLE_USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public Page<TagDto> receivePageOfTags(
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
             @RequestParam(name = "size", required = false, defaultValue = "10") int elementsPerPageNumber) {

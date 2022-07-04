@@ -2,20 +2,20 @@ package com.epam.esm.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class UserDto extends AbstractDto {
     @NotNull
-    @Size(min = 4)
+    @Length(min = 4)
     private String login;
 
     @NotNull
-    @Size(min = 4)
+    @Length(min = 4)
     private String password;
 
     @Pattern(regexp = "ADMIN|USER")
