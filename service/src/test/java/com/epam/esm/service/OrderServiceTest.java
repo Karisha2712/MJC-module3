@@ -30,6 +30,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -44,6 +46,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest(classes = {OrderDtoMapperImpl.class, CertificateDtoMapperImpl.class, TagDtoMapperImpl.class})
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
+    private static final List<OrderDto> orderDtos = new ArrayList<>();
+    private static final List<Order> orders = new ArrayList<>();
+    private static final List<User> users = new ArrayList<>();
     @InjectMocks
     private OrderServiceImpl orderService;
     @Mock
@@ -54,10 +59,6 @@ class OrderServiceTest {
     private UserRepository userRepository;
     @Autowired
     private OrderDtoMapper orderDtoMapper;
-
-    private static final List<OrderDto> orderDtos = new ArrayList<>();
-    private static final List<Order> orders = new ArrayList<>();
-    private static final List<User> users = new ArrayList<>();
 
     @BeforeAll
     static void initialize() {
@@ -206,7 +207,7 @@ class OrderServiceTest {
     void givenNotExistingPage_whenRetrievePageOfOrders_thenThrowsPageNotFoundException() {
         int currentPage = 2;
         int elementsPerPage = 2;
-        Mockito.when(orderRepository.countAllElements()).thenReturn(2L);
+        Mockito.when(orderRepository.count()).thenReturn(2L);
         assertThrows(PageNotFoundException.class, () -> orderService.retrievePageOfOrders(currentPage, elementsPerPage));
     }
 
@@ -216,8 +217,8 @@ class OrderServiceTest {
         int elementsPerPage = 2;
         int totalPageNumber = 1;
         Page<OrderDto> expected = new Page<>(currentPage, totalPageNumber, elementsPerPage, orderDtos);
-        Mockito.when(orderRepository.countAllElements()).thenReturn(2L);
-        Mockito.when(orderRepository.findAll(currentPage, elementsPerPage)).thenReturn(orders);
+        Mockito.when(orderRepository.count()).thenReturn(2L);
+        Mockito.when(orderRepository.findAll(PageRequest.of(currentPage - 1, elementsPerPage))).thenReturn(new PageImpl<>(orders));
         Page<OrderDto> actual = orderService.retrievePageOfOrders(currentPage, elementsPerPage);
         assertEquals(expected, actual);
     }

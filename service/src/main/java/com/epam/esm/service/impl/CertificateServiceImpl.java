@@ -16,6 +16,7 @@ import com.epam.esm.repository.CertificateRepository;
 import com.epam.esm.repository.TagRepository;
 import com.epam.esm.service.CertificateService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,13 +48,13 @@ public class CertificateServiceImpl implements CertificateService {
         if (currentPage <= 0 || elementsPerPageNumber <= 0 || filter.isFilterParamsNotValid()) {
             throw new InvalidAttributeValueException();
         }
-        int totalPageNumber = (int) (certificateRepository.countFilteredElements(filter) / elementsPerPageNumber)
-                + (certificateRepository.countFilteredElements(filter) % elementsPerPageNumber > 0 ? 1 : 0);
+        int totalPageNumber = (int) (certificateRepository.count(filter) / elementsPerPageNumber)
+                + (certificateRepository.count(filter) % elementsPerPageNumber > 0 ? 1 : 0);
         if (currentPage > totalPageNumber) {
             throw new PageNotFoundException(currentPage, totalPageNumber);
         }
         List<CertificateDto> certificateDtos =
-                certificateRepository.findCertificatesWithFilter(filter, currentPage, elementsPerPageNumber)
+                certificateRepository.findAll(filter, PageRequest.of(currentPage - 1, elementsPerPageNumber))
                         .stream()
                         .map(certificateDtoMapper::mapToDto)
                         .collect(Collectors.toList());
@@ -68,7 +69,7 @@ public class CertificateServiceImpl implements CertificateService {
         }
         certificate.setCreatedDate(LocalDateTime.now());
         certificate.setLastUpdateDate(LocalDateTime.now());
-        return certificateRepository.saveEntity(certificate);
+        return certificateRepository.save(certificate).getId();
     }
 
     @Override
@@ -80,7 +81,7 @@ public class CertificateServiceImpl implements CertificateService {
         } else {
             certificate.setDeleted(true);
         }
-        certificateRepository.saveEntity(certificate);
+        certificateRepository.save(certificate);
     }
 
     @Override
@@ -88,9 +89,12 @@ public class CertificateServiceImpl implements CertificateService {
     public void editCertificate(long id, CertificateDto certificateDto) {
         Certificate certificate = certificateRepository.findById(id)
                 .orElseThrow(() -> new CertificateNotFoundException(id));
+        if (certificate.isDeleted()) {
+            throw new CertificateNotFoundException(id);
+        }
         setCertificateToUpdate(certificateDto, certificate);
         certificate.setLastUpdateDate(LocalDateTime.now());
-        certificateRepository.saveEntity(certificate);
+        certificateRepository.save(certificate);
     }
 
     private List<Tag> retrieveCertificateTags(List<TagDto> tagDtos) {

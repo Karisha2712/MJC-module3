@@ -11,9 +11,11 @@ import com.epam.esm.exception.UserNotFoundException;
 import com.epam.esm.mapper.OrderDtoMapper;
 import com.epam.esm.mapper.UserDtoMapper;
 import com.epam.esm.pagination.Page;
+import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
 
+    private final OrderRepository orderRepository;
+
     private final UserDtoMapper userDtoMapper;
 
     private final OrderDtoMapper orderDtoMapper;
@@ -37,7 +41,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void registerUser(UserDto userDto) {
-        if (loginExists(userDto.getLogin())) {
+        if (userRepository.existsUserByLogin(userDto.getLogin())) {
             throw new UserAlreadyExistsException();
         }
         User user = new User();
@@ -47,7 +51,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setRoleId(userRole.getRoleId());
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         user.setPassword(encodedPassword);
-        userRepository.saveEntity(user);
+        userRepository.save(user);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        User user = userRepository.findByLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("User was not found"));
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(UserRole.getRoleById(user.getRoleId()).toString());
+        return new CustomUserDetails(user.getId(), user.getLogin(), user.getPassword(), authority);
     }
 
     @Override
@@ -61,12 +73,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (currentPage <= 0 || elementsPerPageNumber <= 0) {
             throw new InvalidAttributeValueException();
         }
-        int totalPageNumber = (int) (userRepository.countAllElements() / elementsPerPageNumber)
-                + (userRepository.countAllElements() % elementsPerPageNumber > 0 ? 1 : 0);
+        int totalPageNumber = (int) (userRepository.count() / elementsPerPageNumber)
+                + (userRepository.count() % elementsPerPageNumber > 0 ? 1 : 0);
         if (currentPage > totalPageNumber) {
             throw new PageNotFoundException(currentPage, totalPageNumber);
         }
-        List<UserDto> userDtos = userRepository.findAll(currentPage, elementsPerPageNumber)
+        List<UserDto> userDtos = userRepository
+                .findAll(PageRequest.of(currentPage - 1, elementsPerPageNumber))
                 .stream()
                 .map(userDtoMapper::mapToDto)
                 .collect(Collectors.toList());
@@ -78,27 +91,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (currentPage <= 0 || elementsPerPageNumber <= 0) {
             throw new InvalidAttributeValueException();
         }
-        int totalPageNumber = (int) (userRepository.countUserOrders(id) / elementsPerPageNumber)
-                + (userRepository.countUserOrders(id) % elementsPerPageNumber > 0 ? 1 : 0);
+        int totalPageNumber = (int) (orderRepository.countOrdersByUserId(id) / elementsPerPageNumber)
+                + (orderRepository.countOrdersByUserId(id) % elementsPerPageNumber > 0 ? 1 : 0);
         if (currentPage > totalPageNumber) {
             throw new PageNotFoundException(currentPage, totalPageNumber);
         }
-        List<OrderDto> orderDtos = userRepository.findUserOrders(id, currentPage, elementsPerPageNumber)
+        List<OrderDto> orderDtos = orderRepository.findByUserId(id,
+                        PageRequest.of(currentPage - 1, elementsPerPageNumber))
                 .stream()
                 .map(orderDtoMapper::mapToDto)
                 .collect(Collectors.toList());
         return new Page<>(currentPage, totalPageNumber, elementsPerPageNumber, orderDtos);
-    }
-
-    private boolean loginExists(String login) {
-        return userRepository.findByLogin(login).isPresent();
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("User was not found"));
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(UserRole.getRoleById(user.getRoleId()).toString());
-        return new CustomUserDetails(user.getId(), user.getLogin(), user.getPassword(), authority);
     }
 }
