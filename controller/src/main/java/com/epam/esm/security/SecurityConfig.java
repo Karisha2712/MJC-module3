@@ -1,5 +1,6 @@
 package com.epam.esm.security;
 
+import com.epam.esm.security.filter.ExceptionHandlingFilter;
 import com.epam.esm.security.filter.UserAuthenticationFilter;
 import com.epam.esm.security.filter.UserAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.filter.CorsFilter;
+
 
 @Configuration
 @EnableWebSecurity
@@ -25,6 +28,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final SecurityExceptionHandler handler;
+    private final ExceptionHandlingFilter exceptionHandlingFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -35,8 +40,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.formLogin()
+                .failureHandler(handler)
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(handler)
+                .authenticationEntryPoint(handler);
         http.addFilter(new UserAuthenticationFilter(authenticationManager()));
         http.addFilterAfter(new UserAuthorizationFilter(userDetailsService), UserAuthenticationFilter.class);
+        http.addFilterBefore(exceptionHandlingFilter, CorsFilter.class);
     }
 
     @Bean

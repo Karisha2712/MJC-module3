@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -88,6 +89,14 @@ public class CertificatesExceptionHandler {
         String message = messageSource
                 .getMessage("400-invalidArgumentType", null, Locale.ENGLISH);
         return new CertificatesError(message, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public CertificatesError handleAccessDeniedException(AccessDeniedException e) {
+        String message = messageSource
+                .getMessage(HttpStatus.FORBIDDEN.value() + "", null, Locale.ENGLISH);
+        return new CertificatesError(message, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler

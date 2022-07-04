@@ -9,14 +9,16 @@ import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface UserDtoMapper {
-
-    @Named("roleIdToString")
-    static String roleIdToString(int roleId) {
-        return UserRole.getRoleById(roleId).toString();
-    }
+    String PREFIX = "ROLE_";
+    String EMPTY_STRING = "";
 
     @Mapping(source = "roleId", target = "userRole", qualifiedByName = "roleIdToString")
     UserDto mapToDto(User user);
 
     User mapToEntity(UserDto userDto);
+
+    @Named("roleIdToString")
+    static String roleIdToString(int roleId) {
+        return UserRole.getRoleById(roleId).toString().replace(PREFIX, EMPTY_STRING);
+    }
 }

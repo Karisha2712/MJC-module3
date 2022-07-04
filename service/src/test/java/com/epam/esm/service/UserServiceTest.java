@@ -61,6 +61,8 @@ class UserServiceTest {
     @BeforeAll
     static void initialize() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        String prefix = "ROLE_";
+        String emptyString = "";
 
         User user1 = new User();
         user1.setId(1L);
@@ -79,12 +81,12 @@ class UserServiceTest {
         userDto1.setId(1L);
         userDto1.setLogin("login1");
         userDto1.setPassword("password");
-        userDto1.setUserRole(UserRole.ROLE_USER.toString());
+        userDto1.setUserRole(UserRole.ROLE_USER.toString().replace(prefix, emptyString));
         UserDto userDto2 = new UserDto();
         userDto2.setId(2L);
         userDto2.setLogin("login2");
         userDto2.setPassword("password2");
-        userDto2.setUserRole(UserRole.ROLE_ADMIN.toString());
+        userDto2.setUserRole(UserRole.ROLE_ADMIN.toString().replace(prefix, emptyString));
         userDtos.add(userDto1);
         userDtos.add(userDto2);
 
