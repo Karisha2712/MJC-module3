@@ -5,7 +5,6 @@ import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.PageNotFoundException;
 import com.epam.esm.exception.TagAlreadyExistsException;
 import com.epam.esm.exception.TagNotFoundException;
-import com.epam.esm.mapper.TagDtoMapper;
 import com.epam.esm.mapper.TagDtoMapperImpl;
 import com.epam.esm.pagination.Page;
 import com.epam.esm.repository.TagRepository;
@@ -18,6 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceTest {
+    private static final List<TagDto> tagDtos = new ArrayList<>();
+    private static final List<Tag> tags = new ArrayList<>();
     @InjectMocks
     private TagServiceImpl tagService;
     @Mock
     private TagRepository tagRepository;
-
-    private static final List<TagDto> tagDtos = new ArrayList<>();
-    private static final List<Tag> tags = new ArrayList<>();
 
     @BeforeAll
     static void initialize() {
@@ -108,8 +108,8 @@ class TagServiceTest {
         int elementsPerPage = 1;
         int totalPageNumber = 3;
         Page<TagDto> expected = new Page<>(currentPage, totalPageNumber, elementsPerPage, tagDtos);
-        Mockito.when(tagRepository.countAllElements()).thenReturn(3L);
-        Mockito.when(tagRepository.findAll(currentPage, elementsPerPage)).thenReturn(tags);
+        Mockito.when(tagRepository.count()).thenReturn(3L);
+        Mockito.when(tagRepository.findAll(PageRequest.of(currentPage - 1, elementsPerPage))).thenReturn(new PageImpl<>(tags));
         Page<TagDto> actual = tagService.retrievePageOfTags(currentPage, elementsPerPage);
         assertEquals(expected, actual);
     }
@@ -118,7 +118,7 @@ class TagServiceTest {
     void givenNotExistingPage_whenRetrievePageOfTags_thenThrowsPageNotFoundException() {
         int currentPage = 2;
         int elementsPerPage = 1;
-        Mockito.when(tagRepository.countAllElements()).thenReturn(1L);
+        Mockito.when(tagRepository.count()).thenReturn(1L);
         assertThrows(PageNotFoundException.class, () -> tagService.retrievePageOfTags(currentPage, elementsPerPage));
     }
 

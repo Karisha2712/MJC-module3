@@ -12,6 +12,7 @@ import com.epam.esm.repository.OrderRepository;
 import com.epam.esm.repository.UserRepository;
 import com.epam.esm.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -42,12 +43,12 @@ public class OrderServiceImpl implements OrderService {
         if (currentPage <= 0 || elementsPerPageNumber <= 0) {
             throw new InvalidAttributeValueException();
         }
-        int totalPageNumber = (int) (orderRepository.countAllElements() / elementsPerPageNumber)
-                + (orderRepository.countAllElements() % elementsPerPageNumber > 0 ? 1 : 0);
+        int totalPageNumber = (int) (orderRepository.count() / elementsPerPageNumber)
+                + (orderRepository.count() % elementsPerPageNumber > 0 ? 1 : 0);
         if (currentPage > totalPageNumber) {
             throw new PageNotFoundException(currentPage, totalPageNumber);
         }
-        List<OrderDto> certificateDtos = orderRepository.findAll(currentPage, elementsPerPageNumber)
+        List<OrderDto> certificateDtos = orderRepository.findAll(PageRequest.of(currentPage - 1, elementsPerPageNumber))
                 .stream()
                 .map(orderDtoMapper::mapToDto)
                 .collect(Collectors.toList());
@@ -69,7 +70,7 @@ public class OrderServiceImpl implements OrderService {
         order.setCertificates(certificates);
         BigDecimal cost = certificates.stream().map(Certificate::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         order.setCost(cost);
-        return orderRepository.saveEntity(order);
+        return orderRepository.save(order).getId();
     }
 
 }

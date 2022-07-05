@@ -1,12 +1,11 @@
 package com.epam.esm.repository;
 
-import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface UserRepository extends BaseRepository<User> {
-    List<Order> findUserOrders(long id, int page, int elementsPerPage);
+    Optional<User> findByLogin(String login);
 
-    Long countUserOrders(long id);
+    boolean existsUserByLogin(String login);
 }

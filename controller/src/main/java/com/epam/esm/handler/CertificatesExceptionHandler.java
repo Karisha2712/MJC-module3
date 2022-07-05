@@ -1,14 +1,11 @@
 package com.epam.esm.handler;
 
-import com.epam.esm.exception.InvalidAttributeValueException;
-import com.epam.esm.exception.OrderCanNotBeEmptyException;
-import com.epam.esm.exception.ResourceNotFoundException;
-import com.epam.esm.exception.TagAlreadyExistsException;
-import lombok.Data;
+import com.epam.esm.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,11 +34,19 @@ public class CertificatesExceptionHandler {
     }
 
     @ExceptionHandler(TagAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public CertificatesError handleTagAlreadyExistsException(TagAlreadyExistsException e) {
-        String code = HttpStatus.NOT_FOUND.value() + TagAlreadyExistsException.ERROR_CODE;
+        String code = HttpStatus.BAD_REQUEST.value() + TagAlreadyExistsException.ERROR_CODE;
         String message = messageSource.getMessage(code, e.getArgs(), Locale.ENGLISH);
-        return new CertificatesError(message, HttpStatus.NOT_FOUND, TagAlreadyExistsException.ERROR_CODE);
+        return new CertificatesError(message, HttpStatus.BAD_REQUEST, TagAlreadyExistsException.ERROR_CODE);
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public CertificatesError handleUserAlreadyExistsException(UserAlreadyExistsException e) {
+        String code = HttpStatus.BAD_REQUEST.value() + UserAlreadyExistsException.ERROR_CODE;
+        String message = messageSource.getMessage(code, null, Locale.ENGLISH);
+        return new CertificatesError(message, HttpStatus.BAD_REQUEST, UserAlreadyExistsException.ERROR_CODE);
     }
 
     @ExceptionHandler(OrderCanNotBeEmptyException.class)
@@ -86,25 +91,17 @@ public class CertificatesExceptionHandler {
         return new CertificatesError(message, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public CertificatesError handleAccessDeniedException(AccessDeniedException e) {
+        String message = messageSource
+                .getMessage(HttpStatus.FORBIDDEN.value() + "", null, Locale.ENGLISH);
+        return new CertificatesError(message, HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public CertificatesError handleRuntimeException(RuntimeException e) {
         return new CertificatesError(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @Data
-    private static class CertificatesError {
-        private String errorCode;
-        private String errorMessage;
-
-        public CertificatesError(String errorMessage, HttpStatus status, String errorCode) {
-            this.errorCode = status.value() + errorCode;
-            this.errorMessage = errorMessage;
-        }
-
-        public CertificatesError(String errorMessage, HttpStatus status) {
-            this.errorCode = String.valueOf(status.value());
-            this.errorMessage = errorMessage;
-        }
     }
 }

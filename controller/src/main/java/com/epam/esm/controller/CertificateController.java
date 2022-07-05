@@ -9,6 +9,7 @@ import com.epam.esm.pagination.Page;
 import com.epam.esm.service.CertificateService;
 import com.epam.esm.util.ControllerResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ public class CertificateController {
     private final CertificatesLinksCreator certificatesLinksCreator;
 
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     public CertificateDto receiveSingleCertificate(@PathVariable Long id) {
         CertificateDto certificate = certificateService.retrieveSingleCertificate(id);
         certificatesLinksCreator.createLinks(certificate);
@@ -29,6 +31,7 @@ public class CertificateController {
     }
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public Page<CertificateDto> receivePageOfCertificates(
             @RequestParam(name = "page", required = false, defaultValue = "1") int currentPage,
             @RequestParam(name = "size", required = false, defaultValue = "10") int elementsPerPageNumber,
@@ -52,12 +55,14 @@ public class CertificateController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ControllerResponse createCertificate(@Valid @RequestBody CertificateDto certificateDto) {
         long id = certificateService.saveCertificate(certificateDto);
         return new ControllerResponse("Certificate was created successfully with id " + id);
     }
 
     @PatchMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ControllerResponse updateCertificate(@PathVariable Long id,
                                                 @RequestBody CertificateDto certificateDto) {
         certificateService.editCertificate(id, certificateDto);
@@ -65,6 +70,7 @@ public class CertificateController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ControllerResponse deleteCertificate(@PathVariable Long id) {
         certificateService.removeCertificate(id);
         return new ControllerResponse("Certificate was deleted successfully");

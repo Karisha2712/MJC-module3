@@ -26,6 +26,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -38,6 +40,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @SpringBootTest(classes = {CertificateDtoMapperImpl.class, TagDtoMapperImpl.class})
 @ExtendWith(MockitoExtension.class)
 class CertificateServiceTest {
+    private static final List<CertificateDto> certificateDtos = new ArrayList<>();
+    private static final List<Certificate> certificates = new ArrayList<>();
+    private static final List<Tag> tags = new ArrayList<>();
     @InjectMocks
     private CertificateServiceImpl certificateService;
     @Mock
@@ -48,10 +53,6 @@ class CertificateServiceTest {
     private CertificateDtoMapper certificateDtoMapper;
     @Autowired
     private TagDtoMapper tagDtoMapper;
-
-    private static final List<CertificateDto> certificateDtos = new ArrayList<>();
-    private static final List<Certificate> certificates = new ArrayList<>();
-    private static final List<Tag> tags = new ArrayList<>();
 
     @BeforeAll
     static void initialize() {
@@ -144,8 +145,8 @@ class CertificateServiceTest {
 
     @BeforeEach
     void before() {
-        certificateService = new CertificateServiceImpl(certificateRepository,
-                tagRepository, certificateDtoMapper, tagDtoMapper);
+        certificateService = new CertificateServiceImpl(certificateRepository, tagRepository,
+                certificateDtoMapper, tagDtoMapper);
     }
 
     @Test
@@ -202,7 +203,7 @@ class CertificateServiceTest {
         CertificatesFilter filter = new CertificatesFilter(sortBy, order, textPart, tagNames);
         int currentPage = 2;
         int elementsPerPage = 3;
-        Mockito.when(certificateRepository.countFilteredElements(filter)).thenReturn(1L);
+        Mockito.when(certificateRepository.count(filter)).thenReturn(1L);
         assertThrows(PageNotFoundException.class,
                 () -> certificateService.retrievePageOfCertificatesFoundWithFilter(filter, currentPage, elementsPerPage));
     }
@@ -220,9 +221,9 @@ class CertificateServiceTest {
         int elementsPerPage = 2;
         int totalPageNumber = 1;
         Page<CertificateDto> expected = new Page<>(currentPage, totalPageNumber, elementsPerPage, filteredCertificateDtos);
-        Mockito.when(certificateRepository.countFilteredElements(filter)).thenReturn(2L);
+        Mockito.when(certificateRepository.count(filter)).thenReturn(2L);
         Mockito.when(certificateRepository
-                .findCertificatesWithFilter(filter, currentPage, elementsPerPage)).thenReturn(filteredCertificates);
+                .findAll(filter, PageRequest.of(currentPage - 1, elementsPerPage))).thenReturn(new PageImpl<>(filteredCertificates));
         Page<CertificateDto> actual = certificateService
                 .retrievePageOfCertificatesFoundWithFilter(filter, currentPage, elementsPerPage);
         assertEquals(expected, actual);
@@ -241,9 +242,9 @@ class CertificateServiceTest {
         int elementsPerPage = 3;
         int totalPageNumber = 1;
         Page<CertificateDto> expected = new Page<>(currentPage, totalPageNumber, elementsPerPage, certificateDtos);
-        Mockito.when(certificateRepository.countFilteredElements(filter)).thenReturn(3L);
+        Mockito.when(certificateRepository.count(filter)).thenReturn(3L);
         Mockito.when(certificateRepository
-                .findCertificatesWithFilter(filter, currentPage, elementsPerPage)).thenReturn(certificates);
+                .findAll(filter, PageRequest.of(currentPage - 1, elementsPerPage))).thenReturn(new PageImpl<>(certificates));
         Page<CertificateDto> actual = certificateService
                 .retrievePageOfCertificatesFoundWithFilter(filter, currentPage, elementsPerPage);
         assertEquals(expected, actual);
