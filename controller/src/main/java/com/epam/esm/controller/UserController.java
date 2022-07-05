@@ -62,10 +62,4 @@ public class UserController {
         return new ControllerResponse("Order was created successfully with id " + orderId);
     }
 
-    @PostMapping("/registration")
-    @PreAuthorize("permitAll()")
-    public ControllerResponse registerUser(@Valid @RequestBody UserDto userDto) {
-        userService.registerUser(userDto);
-        return new ControllerResponse("User was successfully registered");
-    }
 }

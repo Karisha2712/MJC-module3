@@ -46,12 +46,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         User user = new User();
         user.setLogin(userDto.getLogin());
-        UserRole userRole = (UserRole.ROLE_ADMIN).toString().equals(userDto.getUserRole()) ?
+        UserRole userRole = (UserRole.ROLE_ADMIN).toString().replace("ROLE_", "")
+                .equals(userDto.getUserRole()) ?
                 UserRole.ROLE_ADMIN : UserRole.ROLE_USER;
         user.setRoleId(userRole.getRoleId());
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
         user.setPassword(encodedPassword);
         userRepository.save(user);
+    }
+
+    @Override
+    public User retrieveUserByLogin(String login) {
+        return userRepository.findByLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("User with such login was not found"));
     }
 
     @Override

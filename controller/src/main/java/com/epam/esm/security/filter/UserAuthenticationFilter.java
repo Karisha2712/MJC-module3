@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.AbstractMap;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -67,8 +67,17 @@ public class UserAuthenticationFilter extends UsernamePasswordAuthenticationFilt
                 .withClaim("role", user.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority).collect(Collectors.toList()).get(0))
                 .sign(algorithm);
-        Map.Entry<String, String> token = new AbstractMap.SimpleEntry<>("access_token", accessToken);
+        String refreshToken = JWT.create()
+                .withSubject(user.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis() + 30L * 24 * 60 * 60 * 1000))
+                .withIssuer(request.getRequestURI())
+                .withClaim("role", user.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority).collect(Collectors.toList()).get(0))
+                .sign(algorithm);
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("access_token", accessToken);
+        tokens.put("refresh_token", refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
-        mapper.writeValue(response.getOutputStream(), token);
+        mapper.writeValue(response.getOutputStream(), tokens);
     }
 }

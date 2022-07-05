@@ -18,7 +18,6 @@ import java.util.Set;
 @RestController
 @RequestMapping("/certificates")
 @AllArgsConstructor
-
 public class CertificateController {
     private final CertificateService certificateService;
     private final CertificatesLinksCreator certificatesLinksCreator;
